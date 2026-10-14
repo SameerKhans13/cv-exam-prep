@@ -26,7 +26,7 @@ jobs:
         run: pip install -r scripts/requirements-site.txt
       - name: Assemble docs/ from the repo layout
         run: bash scripts/prepare_docs.sh
-      - name: Build (strict: fails on broken links or anchors)
+      - name: "Build (strict mode, fails on broken links or anchors)"
         run: mkdocs build --strict
       - uses: actions/upload-pages-artifact@v3
         with:
