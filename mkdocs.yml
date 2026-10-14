@@ -1,0 +1,124 @@
+site_name: "Computer Vision: Exam Prep"
+site_description: "Notes, practice questions with full solutions, mock exams, a numericals drill and a quiz for a 16-session Computer Vision course."
+site_url: https://imajij.github.io/cv-exam-prep/
+repo_url: https://github.com/imajij/cv-exam-prep
+repo_name: imajij/cv-exam-prep
+docs_dir: docs  # assembled by scripts/prepare_docs.sh from the repo layout
+
+theme:
+  name: material
+  features: [navigation.tabs, navigation.sections, navigation.top, navigation.footer, navigation.indexes, toc.follow, search.highlight, search.suggest, content.code.copy]
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle: {icon: material/brightness-7, name: Switch to dark mode}
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle: {icon: material/brightness-4, name: Switch to light mode}
+
+markdown_extensions:
+  - tables
+  - attr_list
+  - md_in_html
+  - toc:
+      permalink: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify {kwds: {case: lower}}  # GitHub-style anchors
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.highlight
+  - pymdownx.inlinehilite
+  - pymdownx.tasklist:
+      custom_checkbox: true
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
+
+validation:
+  links:
+    anchors: warn
+
+nav:
+  - Home: index.md
+  - Quiz: https://imajij.github.io/cv-exam-prep/quiz.html
+  - Quick reference:
+      - Formula sheet: 00_formula_sheet.md
+      - Comparison tables: 00_comparison_tables.md
+  - Notes:
+      - "01 · Image Processing & Features": notes/01_image_processing_features.md
+      - "02 · Feature Matching & Classical CV": notes/02_feature_matching_classical.md
+      - "03 · CNNs Under the Hood": notes/03_cnns_under_the_hood.md
+      - "04 · Training CNNs & Transfer Learning": notes/04_training_transfer_learning.md
+      - "05 · Embeddings & Image Similarity": notes/05_embeddings_similarity.md
+      - "06 · Detection I: Two-Stage": notes/06_detection_two_stage.md
+      - "07 · Detection II: One-Stage": notes/07_detection_one_stage.md
+      - "08 · Detection III: Transformers": notes/08_detection_transformers.md
+      - "09 · Revision & Practicals (S9 + S16)": notes/09_revision_practicals.md
+      - "10 · Image Segmentation": notes/10_image_segmentation.md
+      - "11 · Camera Geometry": notes/11_camera_geometry.md
+      - "12 · 3D Vision & Motion": notes/12_3d_vision_motion.md
+      - "13 · Vision Foundation Models": notes/13_vision_foundation_models.md
+      - "14 · Vision++ Pipelines": notes/14_vision_plus_plus.md
+      - "15 · Generative CV": notes/15_generative_cv.md
+  - Practice:
+      - "01 · Image Processing & Features":
+          - Questions: practice/01_questions.md
+          - Solutions: practice/01_solutions.md
+      - "02 · Feature Matching & Classical CV":
+          - Questions: practice/02_questions.md
+          - Solutions: practice/02_solutions.md
+      - "03 · CNNs Under the Hood":
+          - Questions: practice/03_questions.md
+          - Solutions: practice/03_solutions.md
+      - "04 · Training CNNs & Transfer Learning":
+          - Questions: practice/04_questions.md
+          - Solutions: practice/04_solutions.md
+      - "05 · Embeddings & Image Similarity":
+          - Questions: practice/05_questions.md
+          - Solutions: practice/05_solutions.md
+      - "06 · Detection I: Two-Stage":
+          - Questions: practice/06_questions.md
+          - Solutions: practice/06_solutions.md
+      - "07 · Detection II: One-Stage":
+          - Questions: practice/07_questions.md
+          - Solutions: practice/07_solutions.md
+      - "08 · Detection III: Transformers":
+          - Questions: practice/08_questions.md
+          - Solutions: practice/08_solutions.md
+      - "09 · Revision & Practicals (S9 + S16)":
+          - Questions: practice/09_questions.md
+          - Solutions: practice/09_solutions.md
+      - "10 · Image Segmentation":
+          - Questions: practice/10_questions.md
+          - Solutions: practice/10_solutions.md
+      - "11 · Camera Geometry":
+          - Questions: practice/11_questions.md
+          - Solutions: practice/11_solutions.md
+      - "12 · 3D Vision & Motion":
+          - Questions: practice/12_questions.md
+          - Solutions: practice/12_solutions.md
+      - "13 · Vision Foundation Models":
+          - Questions: practice/13_questions.md
+          - Solutions: practice/13_solutions.md
+      - "14 · Vision++ Pipelines":
+          - Questions: practice/14_questions.md
+          - Solutions: practice/14_solutions.md
+      - "15 · Generative CV":
+          - Questions: practice/15_questions.md
+          - Solutions: practice/15_solutions.md
+  - Exams & drill:
+      - Numericals drill: practice/numericals_drill.md
+      - Mock exam 1: practice/mock_exam_1.md
+      - Mock exam 1 · solutions: practice/mock_exam_1_solutions.md
+      - Mock exam 2: practice/mock_exam_2.md
+      - Mock exam 2 · solutions: practice/mock_exam_2_solutions.md
+  - Code: code/README.md
