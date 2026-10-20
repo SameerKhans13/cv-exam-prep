@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive Computer Vision numerical formula sheet for exam revision.">
+  <title>Numericals Lab · Computer Vision</title>
+  <style>
+    :root {
+      --bg: #f6f8fc; --surface: #fff; --surface-2: #f0f4fb; --ink: #172033; --muted: #667085;
+      --line: #dce3ef; --brand: #4058d6; --brand-2: #6d5dfc; --brand-soft: #eef0ff;
+      --green: #16805b; --green-soft: #e8f8f0; --orange: #b96818; --orange-soft: #fff4e7;
+      --shadow: 0 16px 45px rgba(43, 57, 96, .09); --radius: 22px;
+    }
+    [data-theme="dark"] {
+      --bg: #101522; --surface: #171d2d; --surface-2: #20283a; --ink: #edf2ff; --muted: #a7b0c5;
+      --line: #303b52; --brand: #95a3ff; --brand-2: #b1a6ff; --brand-soft: #272d52;
+      --green: #70d4a9; --green-soft: #17382f; --orange: #ffbe76; --orange-soft: #3d2b16;
+      --shadow: 0 16px 45px rgba(0, 0, 0, .2);
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+    a { color: var(--brand); text-decoration: none; }
+    button, input { font: inherit; }
+    .shell { max-width: 1180px; margin: auto; padding: 28px 22px 70px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 26px; }
+    .logo { display: flex; align-items: center; gap: 11px; font-weight: 800; letter-spacing: -.03em; }
+    .logo-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: 12px; color: #fff; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 9px 20px rgba(64, 88, 214, .25); }
+    .top-actions { display: flex; gap: 8px; }
+    .icon-btn, .jump { border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 11px; padding: 8px 12px; cursor: pointer; }
+    .hero { display: grid; grid-template-columns: 1.2fr .8fr; gap: 24px; align-items: stretch; margin-bottom: 26px; }
+    .hero-copy, .hero-art { border-radius: var(--radius); border: 1px solid var(--line); box-shadow: var(--shadow); overflow: hidden; }
+    .hero-copy { padding: 38px; background: linear-gradient(135deg, #252e65, #4d3da1); color: #fff; position: relative; }
+    .eyebrow { color: #cdd4ff; text-transform: uppercase; letter-spacing: .12em; font-size: .75rem; font-weight: 800; }
+    h1 { font-size: clamp(2.2rem, 4vw, 4rem); line-height: 1.03; letter-spacing: -.06em; margin: 12px 0 16px; max-width: 620px; }
+    .hero-copy p { color: #e0e4ff; max-width: 560px; margin: 0; }
+    .hero-stats { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 26px; }
+    .stat { padding: 9px 12px; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.2); border-radius: 12px; font-size: .86rem; }
+    .stat b { display: block; font-size: 1.1rem; color: #fff; }
+    .hero-art { min-height: 300px; background: var(--surface); display: grid; place-items: center; padding: 18px; }
+    .hero-art svg { width: 100%; max-width: 430px; height: auto; }
+    .layout { display: grid; grid-template-columns: 220px 1fr; gap: 28px; align-items: start; }
+    .toc { position: sticky; top: 18px; padding: 17px; border: 1px solid var(--line); background: var(--surface); border-radius: 17px; }
+    .toc strong { display: block; font-size: .76rem; text-transform: uppercase; letter-spacing: .1em; color: var(--muted); margin-bottom: 10px; }
+    .toc a { display: block; padding: 8px 9px; border-radius: 9px; color: var(--muted); font-size: .9rem; }
+    .toc a:hover { color: var(--brand); background: var(--brand-soft); }
+    .section-heading { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin: 10px 0 14px; }
+    .section-heading h2 { margin: 0; font-size: 1.55rem; letter-spacing: -.035em; }
+    .section-heading p { margin: 0; color: var(--muted); font-size: .9rem; }
+    .formula-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); margin: 0 0 20px; overflow: hidden; scroll-margin-top: 20px; }
+    .card-top { display: flex; justify-content: space-between; gap: 14px; padding: 22px 24px 0; }
+    .number { color: var(--brand); font-size: .75rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+    h3 { margin: 5px 0 0; font-size: 1.3rem; letter-spacing: -.025em; }
+    .marks { white-space: nowrap; height: fit-content; padding: 5px 10px; border-radius: 999px; background: var(--brand-soft); color: var(--brand); font-size: .78rem; font-weight: 800; }
+    .card-grid { display: grid; grid-template-columns: 1.05fr .95fr; gap: 24px; padding: 18px 24px 24px; }
+    .visual { min-height: 185px; padding: 14px; display: grid; place-items: center; background: var(--surface-2); border: 1px solid var(--line); border-radius: 16px; }
+    .visual svg { width: 100%; max-width: 360px; height: 180px; }
+    .formula { margin: 0 0 12px; padding: 15px 18px; border-left: 4px solid var(--brand); border-radius: 8px; background: var(--brand-soft); color: var(--ink); font: 600 1.02rem/1.8 ui-monospace, SFMono-Regular, Consolas, monospace; overflow-x: auto; }
+    .tip { padding: 11px 13px; margin: 12px 0; border-radius: 11px; background: var(--orange-soft); color: var(--orange); font-size: .88rem; }
+    .example { padding: 13px 15px; border: 1px solid var(--line); border-radius: 12px; font-size: .9rem; }
+    .example strong { color: var(--green); }
+    .calculator { margin-top: 16px; padding: 16px; border: 1px solid var(--line); border-radius: 15px; background: var(--surface-2); }
+    .calc-title { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); font-weight: 800; margin-bottom: 10px; }
+    .fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(105px, 1fr)); gap: 9px; }
+    label { display: grid; gap: 4px; color: var(--muted); font-size: .78rem; font-weight: 700; }
+    input { min-width: 0; width: 100%; padding: 8px 9px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); color: var(--ink); }
+    .calc-row { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; margin-top: 12px; }
+    .calc-btn { border: 0; border-radius: 9px; padding: 9px 13px; background: var(--brand); color: #fff; font-weight: 800; cursor: pointer; }
+    .result { color: var(--green); font-weight: 800; }
+    .python-box { margin: 0 0 22px; padding: 20px 24px; border: 1px solid var(--line); border-radius: var(--radius); background: #171d2d; color: #dce4ff; box-shadow: var(--shadow); }
+    .python-box h2 { margin: 0 0 5px; color: #fff; font-size: 1.25rem; }
+    .python-box p { margin: 0 0 13px; color: #aeb9d8; font-size: .9rem; }
+    .python-box pre { margin: 0; padding: 15px; overflow-x: auto; border-radius: 12px; background: #0f1421; color: #d8e1ff; font: .83rem/1.55 ui-monospace, SFMono-Regular, Consolas, monospace; }
+    .python-box code { font: inherit; }
+    .python-link { display: inline-block; margin-top: 13px; color: #b9c5ff; font-weight: 800; }
+    .score-strip { display: flex; justify-content: space-between; gap: 18px; align-items: center; padding: 18px 22px; border-radius: 17px; background: var(--surface); border: 1px solid var(--line); margin-top: 10px; }
+    .progress { flex: 1; height: 10px; background: var(--surface-2); border-radius: 20px; overflow: hidden; }
+    .progress i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--brand), #59c8a0); transition: width .3s; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 850px) { .hero, .card-grid { grid-template-columns: 1fr; } .layout { grid-template-columns: 1fr; } .toc { position: static; display: flex; flex-wrap: wrap; gap: 3px; align-items: center; } .toc strong { width: 100%; } }
+    @media (max-width: 520px) { .shell { padding: 17px 13px 50px; } .hero-copy { padding: 27px 22px; } .card-top, .card-grid { padding-left: 17px; padding-right: 17px; } .score-strip { align-items: stretch; flex-direction: column; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="topbar" aria-label="Page actions">
+      <a class="logo" href="README.md"><span class="logo-mark">∑</span><span>CV Exam Prep <small style="display:block;color:var(--muted);font-weight:600;letter-spacing:0">Numericals Lab</small></span></a>
+      <div class="top-actions"><a class="jump" href="emergency_exam_test.html">Open full sprint →</a><button class="icon-btn" id="theme" type="button" aria-label="Toggle theme">◐ Theme</button></div>
+    </nav>
+
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <div class="eyebrow">Section B · high-yield revision</div>
+        <h1>Numericals, made visual.</h1>
+        <p>Master the five deterministic Computer Vision calculations that turn a formula, a substitution, and a unit into reliable exam marks.</p>
+        <div class="hero-stats"><div class="stat"><b>5</b>formula patterns</div><div class="stat"><b>25–30</b>marks targeted</div><div class="stat"><b>∞</b>practice checks</div></div>
+      </div>
+      <div class="hero-art" aria-label="Stylised computer vision pipeline illustration">
+        <svg viewBox="0 0 440 280" role="img">
+          <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#4058d6"/><stop offset="1" stop-color="#6d5dfc"/></linearGradient></defs>
+          <rect x="28" y="35" width="145" height="190" rx="18" fill="none" stroke="#9aa8ff" stroke-width="3"/>
+          <rect x="49" y="58" width="103" height="104" rx="10" fill="url(#g)" opacity=".94"/>
+          <path d="M65 139l24-30 16 17 19-27 20 40" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="127" cy="82" r="9" fill="#ffca72"/>
+          <path d="M177 130h73" stroke="#6674e8" stroke-width="5" stroke-linecap="round"/><path d="m238 117 14 13-14 13" fill="none" stroke="#6674e8" stroke-width="5" stroke-linecap="round"/>
+          <rect x="272" y="78" width="137" height="104" rx="16" fill="#f0f4fb" stroke="#9aa8ff" stroke-width="3"/>
+          <path d="M293 101h96M293 126h75M293 151h48" stroke="#4058d6" stroke-width="7" stroke-linecap="round"/>
+          <text x="45" y="252" font-family="sans-serif" font-size="15" fill="#667085">IMAGE</text><text x="299" y="207" font-family="sans-serif" font-size="15" fill="#667085">FORMULA → ANSWER</text>
+        </svg>
+      </div>
+    </section>
+
+    <div class="score-strip"><div><strong id="completed">0</strong> of 5 calculators completed</div><div class="progress" aria-label="Calculator progress"><i id="progress"></i></div><div style="color:var(--muted);font-size:.9rem">Target: 70+ overall</div></div>
+
+    <div class="layout">
+      <aside class="toc"><strong>Jump to formula</strong><a href="#convolution">01 · Convolution</a><a href="#ransac">02 · RANSAC</a><a href="#iou">03 · IoU</a><a href="#stereo">04 · Stereo depth</a><a href="#segmentation">05 · Segmentation</a></aside>
+      <section>
+        <div class="section-heading"><div><h2 id="page-title">The five-mark toolkit</h2><p>Read the visual, write the formula, then check your substitution.</p></div></div>
+        <section class="python-box" aria-labelledby="python-title">
+          <h2 id="python-title">Fast Python version</h2>
+          <p>Copy this small script into a <code>.py</code> file and run it with <code>python filename.py</code>. No extra packages are needed.</p>
+          <pre><code>from math import ceil, log
+
+def conv(w, k, cin, cout, s=1, p=0, d=1):
+    keff = d * (k - 1) + 1
+    out = (w - keff + 2 * p) // s + 1
+    params = (k * k * cin + 1) * cout
+    return out, params
+
+def ransac(p, e, sample):
+    return ceil(log(1 - p) / log(1 - (1 - e) ** sample))
+
+def iou(a, b):
+    x = max(0, min(a[2], b[2]) - max(a[0], b[0]))
+    y = max(0, min(a[3], b[3]) - max(a[1], b[1]))
+    inter = x * y
+    area = (a[2]-a[0]) * (a[3]-a[1]) + (b[2]-b[0]) * (b[3]-b[1])
+    return inter / (area - inter)
+
+def depth(f, baseline, disparity, disparity_error=1):
+    z = f * baseline / disparity
+    return z, z*z / (f * baseline) * disparity_error
+
+def metrics(tp, fp, fn):
+    iou_score = tp / (tp + fp + fn)
+    dice = 2 * tp / (2 * tp + fp + fn)
+    return iou_score, dice
+
+print(conv(224, 3, 64, 128, s=2, p=1))  # (112, 73856)
+print(ransac(.99, .50, 4))              # 72
+print(round(iou((10,10,50,50), (30,20,70,60)), 3))  # .231
+print(depth(700, .12, 42))              # (2.0, .048)
+print(metrics(80, 10, 20))              # (.727, .842)</code></pre>
+          <a class="python-link" href="code/numericals_fast.py">Open full Python file →</a>
+        </section>
+
+        <article class="formula-card" id="convolution">
+          <div class="card-top"><div><div class="number">01 / feature maps</div><h3>Convolution output & parameters</h3></div><span class="marks">5 marks</span></div>
+          <div class="card-grid"><div>
+            <div class="formula">K<sub>eff</sub> = D(K − 1) + 1<br>W<sub>out</sub> = ⌊(W − K<sub>eff</sub> + 2P) / S⌋ + 1<br>Params = (K<sub>h</sub>K<sub>w</sub>C<sub>in</sub> + 1)C<sub>out</sub></div>
+            <div class="tip"><b>Exam habit:</b> calculate effective kernel first. The +1 in parameter count is the bias.</div>
+            <div class="example">224 × 224 × 64, 3 × 3, 128 channels, stride 2, padding 1 → <strong>112 × 112 output · 73,856 parameters</strong>.</div>
+            <div class="calculator"><div class="calc-title">Try your own layer</div><div class="fields">
+              <label>Input W<input id="cw" type="number" value="224"></label><label>Kernel K<input id="ck" type="number" value="3"></label><label>Channels in<input id="ccin" type="number" value="64"></label><label>Channels out<input id="ccout" type="number" value="128"></label><label>Stride<input id="cs" type="number" value="2"></label><label>Padding<input id="cp" type="number" value="1"></label><label>Dilation<input id="cd" type="number" value="1"></label>
+            </div><div class="calc-row"><button class="calc-btn" data-calc="conv" type="button">Calculate</button><span class="result" id="conv-result" aria-live="polite">Output will appear here</span></div></div>
+          </div><div class="visual"><svg viewBox="0 0 360 180"><rect x="24" y="28" width="125" height="125" rx="8" fill="#dfe5ff" stroke="#4058d6" stroke-width="3"/><path d="M49 28v125M74 28v125M99 28v125M124 28v125M24 53h125M24 78h125M24 103h125M24 128h125" stroke="#8794e8" stroke-width="1.5"/><rect x="81" y="60" width="55" height="55" fill="#6d5dfc" opacity=".9"/><path d="M161 89h60" stroke="#4058d6" stroke-width="4"/><path d="m212 78 13 11-13 11" fill="none" stroke="#4058d6" stroke-width="4"/><rect x="239" y="52" width="84" height="84" rx="8" fill="#c6f1df" stroke="#16805b" stroke-width="3"/><path d="M267 52v84M295 52v84M239 80h84M239 108h84" stroke="#67b895" stroke-width="1.5"/><text x="35" y="171" fill="#667085" font-size="12">input grid</text><text x="248" y="153" fill="#667085" font-size="12">output</text></svg></div></div>
+        </article>
+
+        <article class="formula-card" id="ransac">
+          <div class="card-top"><div><div class="number">02 / robust estimation</div><h3>RANSAC iterations</h3></div><span class="marks">5 marks</span></div>
+          <div class="card-grid"><div>
+            <div class="formula">N = ⌈ ln(1 − p) / ln(1 − (1 − e)<sup>s</sup>) ⌉</div>
+            <div class="tip"><b>Never round down.</b> Use inlier ratio 1 − e, then apply the ceiling. Logs can be any base because this is a ratio.</div>
+            <div class="example">At p = 0.99, e = 0.50, and homography s = 4 → <strong>N = 72 iterations</strong>.</div>
+            <div class="calculator"><div class="calc-title">Iteration checker</div><div class="fields"><label>Success p<input id="rp" type="number" step=".01" value=".99"></label><label>Outlier e<input id="re" type="number" step=".01" value=".5"></label><label>Sample size s<input id="rs" type="number" value="4"></label></div><div class="calc-row"><button class="calc-btn" data-calc="ransac" type="button">Calculate</button><span class="result" id="ransac-result" aria-live="polite">Iterations will appear here</span></div></div>
+          </div><div class="visual"><svg viewBox="0 0 360 180"><path d="M30 140 150 45 325 45" fill="none" stroke="#8794e8" stroke-width="3"/><circle cx="69" cy="115" r="6" fill="#16805b"/><circle cx="98" cy="92" r="6" fill="#16805b"/><circle cx="126" cy="69" r="6" fill="#16805b"/><circle cx="171" cy="74" r="6" fill="#d9782c"/><circle cx="205" cy="117" r="6" fill="#d9782c"/><circle cx="244" cy="90" r="6" fill="#d9782c"/><text x="31" y="165" fill="#667085" font-size="13">random samples → best consensus set</text></svg></div></div>
+        </article>
+
+        <article class="formula-card" id="iou">
+          <div class="card-top"><div><div class="number">03 / detection metrics</div><h3>Intersection over Union</h3></div><span class="marks">5 marks</span></div>
+          <div class="card-grid"><div>
+            <div class="formula">Area = (x<sub>2</sub> − x<sub>1</sub>)(y<sub>2</sub> − y<sub>1</sub>)<br>IoU = Area(A ∩ B) / [Area(A) + Area(B) − Area(A ∩ B)]</div>
+            <div class="tip"><b>Continuous coordinates:</b> do not add +1. Intersection width/height are clamped with max(0, ·).</div>
+            <div class="example">A = (10, 10, 50, 50), B = (30, 20, 70, 60) → intersection 20 × 30 = 600; <strong>IoU = 0.231</strong>.</div>
+            <div class="calculator"><div class="calc-title">Box overlap checker</div><div class="fields"><label>x₁ A<input id="ax1" type="number" value="10"></label><label>y₁ A<input id="ay1" type="number" value="10"></label><label>x₂ A<input id="ax2" type="number" value="50"></label><label>y₂ A<input id="ay2" type="number" value="50"></label><label>x₁ B<input id="bx1" type="number" value="30"></label><label>y₁ B<input id="by1" type="number" value="20"></label><label>x₂ B<input id="bx2" type="number" value="70"></label><label>y₂ B<input id="by2" type="number" value="60"></label></div><div class="calc-row"><button class="calc-btn" data-calc="iou" type="button">Calculate</button><span class="result" id="iou-result" aria-live="polite">IoU will appear here</span></div></div>
+          </div><div class="visual"><svg viewBox="0 0 360 180"><rect x="47" y="39" width="142" height="104" rx="5" fill="#8794e8" fill-opacity=".25" stroke="#4058d6" stroke-width="3"/><rect x="130" y="65" width="143" height="104" rx="5" fill="#67c79d" fill-opacity=".35" stroke="#16805b" stroke-width="3"/><path d="M130 65h59v78h-59z" fill="#bd8af5" fill-opacity=".55"/><text x="49" y="30" fill="#4058d6" font-size="13">A</text><text x="277" y="73" fill="#16805b" font-size="13">B</text><text x="139" y="158" fill="#7042a3" font-size="12">intersection</text></svg></div></div>
+        </article>
+
+        <article class="formula-card" id="stereo">
+          <div class="card-top"><div><div class="number">04 / 3D vision</div><h3>Stereo disparity & depth error</h3></div><span class="marks">5 marks</span></div>
+          <div class="card-grid"><div>
+            <div class="formula">d = fB / Z &nbsp;→&nbsp; Z = fB / d<br>ΔZ ≈ (Z² / fB) Δd</div>
+            <div class="tip"><b>Interpretation:</b> depth uncertainty grows with Z². Doubling the distance makes the error about four times larger.</div>
+            <div class="example">f = 700 px, B = 0.12 m, d = 42 px → <strong>Z = 2.00 m</strong>. If Δd = 1 px, ΔZ ≈ 0.048 m.</div>
+            <div class="calculator"><div class="calc-title">Depth checker</div><div class="fields"><label>Focal f (px)<input id="sf" type="number" value="700"></label><label>Baseline B (m)<input id="sb" type="number" step=".01" value=".12"></label><label>Disparity d (px)<input id="sd" type="number" value="42"></label><label>Δd (px)<input id="sdd" type="number" step=".1" value="1"></label></div><div class="calc-row"><button class="calc-btn" data-calc="stereo" type="button">Calculate</button><span class="result" id="stereo-result" aria-live="polite">Depth will appear here</span></div></div>
+          </div><div class="visual"><svg viewBox="0 0 360 180"><path d="M48 38v104M312 38v104" stroke="#4058d6" stroke-width="5"/><path d="M48 73 245 93M312 73 245 93M48 125 245 93M312 125 245 93" stroke="#8794e8" stroke-width="2"/><circle cx="48" cy="98" r="8" fill="#6d5dfc"/><circle cx="312" cy="98" r="8" fill="#6d5dfc"/><circle cx="245" cy="93" r="8" fill="#16805b"/><text x="37" y="160" fill="#667085" font-size="13">left / right cameras</text><text x="229" y="78" fill="#16805b" font-size="13">Z</text></svg></div></div>
+        </article>
+
+        <article class="formula-card" id="segmentation">
+          <div class="card-top"><div><div class="number">05 / segmentation</div><h3>Confusion-matrix metrics</h3></div><span class="marks">5 marks</span></div>
+          <div class="card-grid"><div>
+            <div class="formula">Pixel accuracy = Σ diagonal / total<br>IoU<sub>c</sub> = TP / (TP + FP + FN)<br>Dice<sub>c</sub> = 2TP / (2TP + FP + FN) = 2IoU / (1 + IoU)</div>
+            <div class="tip"><b>Convention:</b> rows are ground truth, columns are prediction. For each class, FP comes from the prediction column and FN from the GT row.</div>
+            <div class="example">TP = 80, FP = 10, FN = 20 → IoU = <strong>0.727</strong>; Dice = <strong>0.842</strong>.</div>
+            <div class="calculator"><div class="calc-title">Class metric checker</div><div class="fields"><label>True positive<input id="mt" type="number" value="80"></label><label>False positive<input id="mf" type="number" value="10"></label><label>False negative<input id="mn" type="number" value="20"></label></div><div class="calc-row"><button class="calc-btn" data-calc="metrics" type="button">Calculate</button><span class="result" id="metrics-result" aria-live="polite">Metrics will appear here</span></div></div>
+          </div><div class="visual"><svg viewBox="0 0 360 180"><rect x="65" y="37" width="230" height="112" rx="8" fill="none" stroke="#667085" stroke-width="2"/><path d="M180 37v112M65 93h230" stroke="#667085" stroke-width="2"/><path d="M67 39h111v52H67zM182 95h111v52H182z" fill="#b9ead4"/><path d="M96 74l16 15 29-34M211 127l16 15 29-34" fill="none" stroke="#16805b" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><text x="115" y="27" fill="#667085" font-size="12">prediction →</text><text x="8" y="96" fill="#667085" font-size="12" transform="rotate(-90 8 96)">ground truth →</text><text x="85" y="73" fill="#16805b" font-size="12">TP</text><text x="199" y="130" fill="#16805b" font-size="12">TN</text></svg></div></div>
+        </article>
+      </section>
+    </div>
+  </main>
+  <script>
+    const $ = id => document.getElementById(id);
+    const number = id => Number($(id).value);
+    const completed = new Set();
+    function markDone(name) {
+      completed.add(name);
+      $("completed").textContent = completed.size;
+      $("progress").style.width = `${completed.size * 20}%`;
+    }
+    function valid(values) { return values.every(value => Number.isFinite(value) && value >= 0); }
+    document.querySelectorAll("[data-calc]").forEach(button => button.addEventListener("click", () => {
+      const type = button.dataset.calc;
+      if (type === "conv") {
+        const w = number("cw"), k = number("ck"), cin = number("ccin"), cout = number("ccout"), s = number("cs"), p = number("cp"), d = number("cd");
+        if (!valid([w, k, cin, cout, s, p, d]) || !s || !k) return $("conv-result").textContent = "Enter valid positive values.";
+        const keff = d * (k - 1) + 1, out = Math.floor((w - keff + 2 * p) / s) + 1, params = (k * k * cin + 1) * cout;
+        $("conv-result").textContent = `Keff ${keff} · output ${out} × ${out} · ${params.toLocaleString()} params`; markDone(type);
+      }
+      if (type === "ransac") {
+        const p = number("rp"), e = number("re"), s = number("rs");
+        if (!valid([p, e, s]) || p <= 0 || p >= 1 || e >= 1 || !s) return $("ransac-result").textContent = "Use 0 < p < 1 and 0 ≤ e < 1.";
+        const n = Math.ceil(Math.log(1 - p) / Math.log(1 - Math.pow(1 - e, s)));
+        $("ransac-result").textContent = `${n} iterations (always round up)`; markDone(type);
+      }
+      if (type === "iou") {
+        const a = ["ax1","ay1","ax2","ay2"].map(number), b = ["bx1","by1","bx2","by2"].map(number);
+        if (!valid(a.concat(b)) || a[2] <= a[0] || a[3] <= a[1] || b[2] <= b[0] || b[3] <= b[1]) return $("iou-result").textContent = "Each box needs x₂ > x₁ and y₂ > y₁.";
+        const inter = Math.max(0, Math.min(a[2], b[2]) - Math.max(a[0], b[0])) * Math.max(0, Math.min(a[3], b[3]) - Math.max(a[1], b[1]));
+        const areas = (a[2] - a[0]) * (a[3] - a[1]) + (b[2] - b[0]) * (b[3] - b[1]);
+        $("iou-result").textContent = `intersection ${inter.toFixed(2)} · IoU ${(inter / (areas - inter)).toFixed(3)}`; markDone(type);
+      }
+      if (type === "stereo") {
+        const f = number("sf"), b = number("sb"), d = number("sd"), dd = number("sdd");
+        if (!valid([f,b,d,dd]) || !f || !b || !d) return $("stereo-result").textContent = "Enter positive camera values.";
+        const z = f * b / d, dz = z * z / (f * b) * dd;
+        $("stereo-result").textContent = `depth ${z.toFixed(3)} m · ΔZ ≈ ${dz.toFixed(3)} m`; markDone(type);
+      }
+      if (type === "metrics") {
+        const tp = number("mt"), fp = number("mf"), fn = number("mn");
+        if (!valid([tp, fp, fn]) || tp + fp + fn === 0) return $("metrics-result").textContent = "Enter valid counts.";
+        const iou = tp / (tp + fp + fn), dice = 2 * tp / (2 * tp + fp + fn);
+        $("metrics-result").textContent = `IoU ${iou.toFixed(3)} · Dice ${dice.toFixed(3)}`; markDone(type);
+      }
+    }));
+    $("theme").addEventListener("click", () => {
+      const dark = document.documentElement.dataset.theme === "dark";
+      document.documentElement.dataset.theme = dark ? "light" : "dark";
+      localStorage.setItem("cv-theme", dark ? "light" : "dark");
+    });
+    const savedTheme = localStorage.getItem("cv-theme");
+    if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+  </script>
+</body>
+</html>

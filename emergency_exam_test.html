@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CV Emergency Sprint: 70+ Marks in 2 Hours</title>
+<style>
+  :root {
+    --bg: #0d1117; --card: #161b22; --border: #30363d; --text: #c9d1d9; --text-bright: #f0f6fc;
+    --accent: #58a6ff; --accent-glow: rgba(88, 166, 255, 0.15); --success: #3fb950; --success-bg: rgba(63, 185, 80, 0.15);
+    --danger: #f85149; --danger-bg: rgba(248, 81, 73, 0.15); --warn: #d29922; --warn-bg: rgba(210, 153, 34, 0.15);
+    --code-bg: #0a0c10;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    line-height: 1.5; padding-bottom: 60px;
+  }
+  .container { max-width: 900px; margin: 0 auto; padding: 20px 16px; }
+  header {
+    background: linear-gradient(135deg, #1f2937, #111827); border: 1px solid var(--border);
+    border-radius: 12px; padding: 20px; margin-bottom: 20px;
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;
+  }
+  h1 { margin: 0; font-size: 1.5rem; color: var(--text-bright); }
+  .badge { background: var(--accent); color: #000; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; }
+  .timer-box { font-size: 1.3rem; font-weight: 700; color: var(--warn); background: var(--code-bg); padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border); font-variant-numeric: tabular-nums; }
+  
+  .score-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px;
+  }
+  .score-val { font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .score-target { font-size: 0.9rem; color: #8b949e; }
+  .progress-bar-bg { width: 100%; height: 10px; background: #21262d; border-radius: 5px; overflow: hidden; margin-top: 8px; }
+  .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #f85149, #d29922, #3fb950); transition: width 0.3s; }
+
+  .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 4px; }
+  .tab-btn {
+    background: var(--card); border: 1px solid var(--border); color: var(--text);
+    padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; white-space: nowrap;
+  }
+  .tab-btn.active { background: var(--accent); color: #000; border-color: var(--accent); }
+  
+  .section-panel { display: none; }
+  .section-panel.active { display: block; }
+
+  .card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; margin-bottom: 16px;
+  }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+  .card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-bright); margin: 0; }
+  .pts { background: var(--accent-glow); color: var(--accent); padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; font-weight: 600; }
+
+  .formula-box {
+    background: var(--code-bg); border-left: 4px solid var(--accent);
+    padding: 10px 14px; border-radius: 4px; font-family: monospace; font-size: 0.95rem; margin: 10px 0;
+    color: #79c0ff;
+  }
+
+  .q-opt {
+    background: #21262d; border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 14px; margin-bottom: 8px; cursor: pointer; display: block; text-align: left;
+    width: 100%; color: var(--text); font-size: 0.95rem; transition: all 0.2s;
+  }
+  .q-opt:hover { border-color: var(--accent); background: #262c36; }
+  .q-opt.correct { background: var(--success-bg); border-color: var(--success); color: #7ee787; }
+  .q-opt.wrong { background: var(--danger-bg); border-color: var(--danger); color: #ffa198; }
+
+  .feedback-box {
+    padding: 12px; border-radius: 8px; margin-top: 10px; font-size: 0.9rem; display: none;
+  }
+  .feedback-box.show { display: block; }
+  .feedback-ok { background: var(--success-bg); border: 1px solid var(--success); color: #7ee787; }
+  .feedback-err { background: var(--danger-bg); border: 1px solid var(--danger); color: #ffa198; }
+
+  input[type="number"], input[type="text"] {
+    background: var(--code-bg); border: 1px solid var(--border); color: var(--text-bright);
+    padding: 8px 12px; border-radius: 6px; font-size: 1rem; width: 140px; margin-right: 8px;
+  }
+  button.action-btn {
+    background: var(--accent); color: #000; font-weight: 700; border: none;
+    padding: 8px 16px; border-radius: 6px; cursor: pointer;
+  }
+  button.action-btn:hover { opacity: 0.9; }
+
+  .reveal-btn {
+    background: transparent; border: 1px solid var(--border); color: var(--accent);
+    padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; margin-top: 8px;
+  }
+  .reveal-content { display: none; padding-top: 10px; border-top: 1px dashed var(--border); margin-top: 10px; font-size: 0.92rem; }
+  .reveal-content.open { display: block; }
+
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9rem; }
+  th, td { border: 1px solid var(--border); padding: 8px 10px; text-align: left; }
+  th { background: #21262d; color: var(--text-bright); }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div>
+      <span class="badge">EMERGENCY CRASH TEST</span>
+      <h1>Computer Vision: 70+ Marks Sprint</h1>
+      <div style="font-size: 0.85rem; color: #8b949e; margin-top: 4px;">2-Hour Rapid Mastery · Interactive Solvers · Exam Traps · Instant Grading</div>
+    </div>
+    <div style="text-align: right;">
+      <div style="font-size: 0.75rem; color: #8b949e; text-transform: uppercase;">Countdown Timer</div>
+      <div class="timer-box" id="timer">02:00:00</div>
+    </div>
+  </header>
+
+  <div class="score-card">
+    <div>
+      <div style="font-size: 0.85rem; text-transform: uppercase; color: #8b949e;">Your Predicted Exam Score</div>
+      <div class="score-val"><span id="total-score">0</span> / 100</div>
+      <div class="score-target">Target: <strong style="color: var(--success);">70+ Marks</strong> (Current Status: <span id="verdict" style="color: var(--danger);">Incomplete - Drill Now!</span>)</div>
+    </div>
+    <div style="flex: 1; max-width: 380px;">
+      <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: #8b949e;">
+        <span>0 Marks</span>
+        <span>Pass (40)</span>
+        <span>Goal (70)</span>
+        <span>Distinction (85+)</span>
+      </div>
+      <div class="progress-bar-bg">
+        <div class="progress-bar-fill" id="p-bar"></div>
+      </div>
+      <div style="font-size: 0.78rem; color: #8b949e; margin-top: 6px; text-align: right;">
+        Sec A: <b id="sc-a">0</b>/20 · Sec B: <b id="sc-b">0</b>/30 · Sec C: <b id="sc-c">0</b>/20 · Sec D: <b id="sc-d">0</b>/30
+      </div>
+    </div>
+  </div>
+
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('tab-num')">🔥 Sec B: 5 Guaranteed Numericals (30M)</button>
+    <button class="tab-btn" onclick="switchTab('tab-mcq')">⚡ Sec A: 10 MCQ Traps (20M)</button>
+    <button class="tab-btn" onclick="switchTab('tab-short')">📝 Sec C: 4 Ready Proofs (20M)</button>
+    <button class="tab-btn" onclick="switchTab('tab-long')">🏛️ Sec D: 2 Long Design Blueprints (30M)</button>
+    <button class="tab-btn" onclick="switchTab('tab-plan')">⏱️ 120-Min Minute-by-Minute Plan</button>
+  </div>
+
+  <!-- TAB 1: NUMERICALS -->
+  <div id="tab-num" class="section-panel active">
+    <div style="background: var(--warn-bg); border: 1px solid var(--warn); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem;">
+      <strong>⚠️ PRIORITY #1 FOR 70+:</strong> Section B is 30 marks of pure deterministic formula substitution. Work these 5 calculations right now!
+    </div>
+
+    <!-- NUMERICAL 1 -->
+    <div class="card" id="card-n1">
+      <div class="card-header">
+        <h3 class="card-title">Problem 1: Convolution Output & Parameters</h3>
+        <span class="pts">5 Marks</span>
+      </div>
+      <p>An input feature map of size <strong>224 × 224 × 64</strong> (H × W × C_in) is passed through a conv layer with <strong>128 filters</strong> of kernel size <strong>3 × 3</strong>, stride <strong>S = 2</strong>, padding <strong>P = 1</strong>, dilation <strong>D = 1</strong>, with bias.</p>
+      <div class="formula-box">
+        W_out = ⌊(W - K_eff + 2P)/S⌋ + 1, where K_eff = D(K - 1) + 1<br>
+        Params = (K × K × C_in + 1) × C_out
+      </div>
+      <div style="margin: 12px 0;">
+        <label>1. Output spatial size (W_out): </label>
+        <input type="number" id="ans-n1-w" placeholder="e.g. 112"> px
+        <label style="margin-left: 15px;">2. Total Learnable Parameters: </label>
+        <input type="number" id="ans-n1-p" placeholder="e.g. 73856">
+        <button class="action-btn" onclick="checkN1()" style="margin-left: 10px;">Check</button>
+      </div>
+      <div id="fb-n1" class="feedback-box"></div>
+      <button class="reveal-btn" onclick="toggleReveal('rev-n1')">Show Full Step-by-Step Working</button>
+      <div class="reveal-content" id="rev-n1">
+        <strong>Step 1 (Output size):</strong><br>
+        K_eff = 1(3 - 1) + 1 = 3.<br>
+        W_out = ⌊(224 - 3 + 2(1)) / 2⌋ + 1 = ⌊223 / 2⌋ + 1 = 111 + 1 = <strong>112</strong> px.<br>
+        <strong>Step 2 (Parameters):</strong><br>
+        Weights per filter = 3 × 3 × 64 = 576. Add 1 bias = 577.<br>
+        Total for 128 filters = 577 × 128 = <strong>73,856</strong> parameters.
+      </div>
+    </div>
+
+    <!-- NUMERICAL 2 -->
+    <div class="card" id="card-n2">
+      <div class="card-header">
+        <h3 class="card-title">Problem 2: RANSAC Required Iterations (Round Up!)</h3>
+        <span class="pts">5 Marks</span>
+      </div>
+      <p>You are estimating a <strong>Homography</strong> between two images using matched keypoints. The outlier ratio is <strong>e = 0.50</strong> (50% outliers). You want at least <strong>p = 0.99</strong> (99%) probability of finding at least one outlier-free sample.</p>
+      <div class="formula-box">
+        N = ⌈ ln(1 - p) / ln(1 - (1 - e)^s) ⌉<br>
+        Note: For Homography, minimal sample size s = 4. Always round UP!
+      </div>
+      <div style="margin: 12px 0;">
+        <label>Enter required iterations N: </label>
+        <input type="number" id="ans-n2" placeholder="e.g. 72">
+        <button class="action-btn" onclick="checkN2()">Check</button>
+      </div>
+      <div id="fb-n2" class="feedback-box"></div>
+      <button class="reveal-btn" onclick="toggleReveal('rev-n2')">Show Full Step-by-Step Working</button>
+      <div class="reveal-content" id="rev-n2">
+        1. s = 4 (homography needs 4 point correspondences).<br>
+        2. Inlier ratio = 1 - e = 0.50. Probability that all 4 are inliers = (0.50)^4 = 0.0625.<br>
+        3. ln(1 - 0.99) = ln(0.01) = -4.60517.<br>
+        4. ln(1 - 0.0625) = ln(0.9375) = -0.0645385.<br>
+        5. Ratio = -4.60517 / -0.0645385 = 71.359.<br>
+        6. Rounding: <strong>Always round UP</strong> $\to$ <strong>72</strong> iterations! (71 gets partial marks).
+      </div>
+    </div>
+
+    <!-- NUMERICAL 3 -->
+    <div class="card" id="card-n3">
+      <div class="card-header">
+        <h3 class="card-title">Problem 3: Intersection-over-Union (IoU) with Continuous Coords</h3>
+        <span class="pts">5 Marks</span>
+      </div>
+      <p>Calculate the IoU between Box A: <code>(10, 10, 50, 50)</code> and Box B: <code>(30, 30, 70, 70)</code>.<br>
+      <em>Convention: continuous coordinates (x1, y1, x2, y2), Area = (x2 - x1) * (y2 - y1), <strong>NO +1</strong>.</em></p>
+      <div class="formula-box">
+        Intersection = (min(x2) - max(x1)) × (min(y2) - max(y1))<br>
+        IoU = Inter / (Area_A + Area_B - Inter)
+      </div>
+      <div style="margin: 12px 0;">
+        <label>Enter exact IoU (rounded to 3 decimal places): </label>
+        <input type="number" step="0.001" id="ans-n3" placeholder="e.g. 0.143">
+        <button class="action-btn" onclick="checkN3()">Check</button>
+      </div>
+      <div id="fb-n3" class="feedback-box"></div>
+      <button class="reveal-btn" onclick="toggleReveal('rev-n3')">Show Full Step-by-Step Working</button>
+      <div class="reveal-content" id="rev-n3">
+        1. Area(A) = (50 - 10) × (50 - 10) = 40 × 40 = 1600.<br>
+        2. Area(B) = (70 - 30) × (70 - 30) = 40 × 40 = 1600.<br>
+        3. Overlap rect: x from max(10, 30)=30 to min(50, 70)=50 (width = 20).<br>
+        &nbsp;&nbsp;&nbsp;y from max(10, 30)=30 to min(50, 70)=50 (height = 20).<br>
+        4. Inter = 20 × 20 = 400.<br>
+        5. Union = Area_A + Area_B - Inter = 1600 + 1600 - 400 = 2800.<br>
+        6. IoU = 400 / 2800 = 1/7 ≈ <strong>0.143</strong>.
+      </div>
+    </div>
+
+    <!-- NUMERICAL 4 -->
+    <div class="card" id="card-n4">
+      <div class="card-header">
+        <h3 class="card-title">Problem 4: Stereo Disparity and Depth Error</h3>
+        <span class="pts">5 Marks</span>
+      </div>
+      <p>A calibrated rectified stereo camera has focal length <strong>f = 800 px</strong> and baseline <strong>B = 0.2 m</strong> (200 mm). A target is at depth <strong>Z = 4.0 m</strong>.</p>
+      <div class="formula-box">
+        Disparity d = fB / Z<br>
+        Depth Error ΔZ ≈ (Z^2 / (fB)) × Δd
+      </div>
+      <div style="margin: 12px 0;">
+        <label>1. Disparity d (in px): </label>
+        <input type="number" id="ans-n4-d" placeholder="e.g. 40"> px
+        <label style="margin-left: 15px;">2. Depth error ΔZ for Δd = 0.5 px: </label>
+        <input type="number" step="0.01" id="ans-n4-z" placeholder="e.g. 0.05"> m
+        <button class="action-btn" onclick="checkN4()" style="margin-left: 10px;">Check</button>
+      </div>
+      <div id="fb-n4" class="feedback-box"></div>
+      <button class="reveal-btn" onclick="toggleReveal('rev-n4')">Show Full Step-by-Step Working</button>
+      <div class="reveal-content" id="rev-n4">
+        1. Disparity: d = (800 px × 0.2 m) / 4.0 m = 160 / 4 = <strong>40 px</strong>.<br>
+        2. Depth error propagation: |dZ/dd| = Z^2 / (fB) = 4.0^2 / 160 = 16 / 160 = 0.1 m/px.<br>
+        3. For Δd = 0.5 px: ΔZ = 0.1 × 0.5 = <strong>0.05 m</strong> (5 cm).
+      </div>
+    </div>
+
+    <!-- NUMERICAL 5 -->
+    <div class="card" id="card-n5">
+      <div class="card-header">
+        <h3 class="card-title">Problem 5: Confusion Matrix & Class IoU / Dice</h3>
+        <span class="pts">5 Marks</span>
+      </div>
+      <p>In a binary segmentation test, foreground pixels have: <strong>TP = 60, FP = 20, FN = 20</strong>.</p>
+      <div class="formula-box">
+        IoU = TP / (TP + FP + FN)<br>
+        Dice = 2·TP / (2·TP + FP + FN) = 2·IoU / (1 + IoU)
+      </div>
+      <div style="margin: 12px 0;">
+        <label>1. Foreground IoU: </label>
+        <input type="number" step="0.01" id="ans-n5-iou" placeholder="e.g. 0.60">
+        <label style="margin-left: 15px;">2. Foreground Dice: </label>
+        <input type="number" step="0.01" id="ans-n5-dice" placeholder="e.g. 0.75">
+        <button class="action-btn" onclick="checkN5()" style="margin-left: 10px;">Check</button>
+      </div>
+      <div id="fb-n5" class="feedback-box"></div>
+      <button class="reveal-btn" onclick="toggleReveal('rev-n5')">Show Full Step-by-Step Working</button>
+      <div class="reveal-content" id="rev-n5">
+        1. IoU = 60 / (60 + 20 + 20) = 60 / 100 = <strong>0.60</strong> (60%).<br>
+        2. Dice = (2 × 60) / (2 × 60 + 20 + 20) = 120 / 160 = <strong>0.75</strong> (75%).<br>
+        <em>Sanity check:</em> Dice = 2(0.60)/(1 + 0.60) = 1.20 / 1.60 = 0.75. Notice <strong>Dice (0.75) > IoU (0.60)</strong>!
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB 2: MCQS -->
+  <div id="tab-mcq" class="section-panel">
+    <div style="background: var(--accent-glow); border: 1px solid var(--accent); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem;">
+      <strong>⚡ RAPID 10-TRAP MCQ DRILL:</strong> Click the correct option. Traps turn red, correct answers turn green and add 2 marks each to your total!
+    </div>
+    
+    <div id="mcq-container"></div>
+  </div>
+
+  <!-- TAB 3: SHORT PROOFS -->
+  <div id="tab-short" class="section-panel">
+    <div style="background: var(--success-bg); border: 1px solid var(--success); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem;">
+      <strong>📝 4 GUARANTEED SHORT ANSWER PROOFS (4 Marks Each):</strong> Memorize these 4 proofs word-for-word. They recur on every CV exam paper!
+    </div>
+
+    <!-- PROOF 1 -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Proof 1: Derivation of Dice = 2·IoU / (1 + IoU) and Proof that Dice ≥ IoU</h3>
+        <span class="pts">4 Marks</span>
+      </div>
+      <div style="font-size: 0.95rem;">
+        <strong>1. Definitions:</strong><br>
+        Let $I = |A \cap B|$ (Intersection) and $U = |A \cup B| = |A| + |B| - I$ (Union).<br>
+        $\text{IoU} = \frac{I}{|A| + |B| - I} \implies |A| + |B| - I = \frac{I}{\text{IoU}} \implies |A| + |B| = I\left(\frac{1}{\text{IoU}} + 1\right) = I\left(\frac{1 + \text{IoU}}{\text{IoU}}\right)$.<br><br>
+        <strong>2. Substitute into Dice:</strong><br>
+        $\text{Dice} = \frac{2|A \cap B|}{|A| + |B|} = \frac{2I}{I\left(\frac{1+\text{IoU}}{\text{IoU}}\right)} = \mathbf{\frac{2\,\text{IoU}}{1 + \text{IoU}}}$. $\quad \blacksquare$<br><br>
+        <strong>3. Proof of Inequality ($\text{Dice} \ge \text{IoU}$):</strong><br>
+        Consider the difference: $\text{Dice} - \text{IoU} = \frac{2\,\text{IoU}}{1 + \text{IoU}} - \text{IoU} = \frac{2\,\text{IoU} - \text{IoU}(1+\text{IoU})}{1 + \text{IoU}} = \frac{\text{IoU}(1 - \text{IoU})}{1 + \text{IoU}}$.<br>
+        Since $\text{IoU} \in [0, 1]$, the numerator $\text{IoU}(1-\text{IoU}) \ge 0$ and the denominator $1+\text{IoU} > 0$.<br>
+        Therefore, $\mathbf{\text{Dice} \ge \text{IoU}}$ always, with equality iff $\text{IoU} = 0$ or $\text{IoU} = 1$.
+      </div>
+      <button class="action-btn" onclick="markShortDone(1, this)" style="margin-top: 12px;">I Have Memorized This (+5 Marks)</button>
+    </div>
+
+    <!-- PROOF 2 -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Proof 2: Why Essential Matrix E has 5 DOF while Fundamental Matrix F has 7 DOF</h3>
+        <span class="pts">4 Marks</span>
+      </div>
+      <div style="font-size: 0.95rem;">
+        <strong>1. Fundamental Matrix F ($3 \times 3$, uncalibrated pixels $\mathbf{x}'^\top F \mathbf{x} = 0$):</strong><br>
+        • A $3 \times 3$ matrix has 9 raw parameters.<br>
+        • Overall scale ambiguity removes 1 DOF (if $F$ satisfies the equation, so does $\lambda F$) $\implies 9 - 1 = 8$.<br>
+        • Rank constraint: $\det(F) = 0$ (must have rank 2 to define epipoles as null-spaces) removes 1 constraint $\implies 8 - 1 = \mathbf{7\text{ DOF}}$.<br><br>
+        <strong>2. Essential Matrix E ($E = [\mathbf{t}]_\times R$, normalized camera frame $\hat{\mathbf{x}}'^\top E \hat{\mathbf{x}} = 0$):</strong><br>
+        • $E$ is formed from relative rotation $R$ and translation $\mathbf{t}$.<br>
+        • 3D rotation $R \in SO(3)$ has <strong>3 DOF</strong>.<br>
+        • Translation $\mathbf{t}$ has 3 components, but translation scale is unobservable from 2 images, so only its direction matters (unit sphere $S^2$) $\implies \mathbf{2\text{ DOF}}$.<br>
+        • Total DOF = $3 + 2 = \mathbf{5\text{ DOF}}$.<br>
+        • Singular value property: Two non-zero singular values must be equal, and the third is zero: $(\sigma, \sigma, 0)$.
+      </div>
+      <button class="action-btn" onclick="markShortDone(2, this)" style="margin-top: 12px;">I Have Memorized This (+5 Marks)</button>
+    </div>
+
+    <!-- PROOF 3 -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Proof 3: Why DETR Eliminates NMS (Set Prediction & Hungarian Matching)</h3>
+        <span class="pts">4 Marks</span>
+      </div>
+      <div style="font-size: 0.95rem;">
+        <strong>1. The Root Cause of NMS in Classical Detectors:</strong><br>
+        Prior detectors (Faster R-CNN, YOLO, SSD) place thousands of overlapping anchor boxes across grid cells. Multiple anchors fire on the same object, necessitating heuristic Non-Maximum Suppression (NMS) to greedily suppress duplicates based on an IoU threshold.<br><br>
+        <strong>2. The DETR Paradigm: Direct Set Prediction:</strong><br>
+        • DETR uses a fixed small set of $N = 100$ learnable object queries passed through a Transformer decoder.<br>
+        • The network directly predicts a set of $N$ bounding boxes and class logits.<br><br>
+        <strong>3. Bipartite Matching Loss:</strong><br>
+        • Ground truth objects are padded with a background class $\varnothing$ up to size $N$.<br>
+        • During training, the <strong>Hungarian Algorithm</strong> finds a global optimal 1-to-1 matching permutation $\hat{\sigma} \in \mathfrak{S}_N$ minimizing matching cost $\mathcal{L}_{match}$.<br>
+        • Because each query can match at most one ground-truth object, two queries cannot both be assigned the same ground-truth object without incurring a severe penalty. Thus, <strong>duplicate detections are suppressed end-to-end without NMS</strong>.
+      </div>
+      <button class="action-btn" onclick="markShortDone(3, this)" style="margin-top: 12px;">I Have Memorized This (+5 Marks)</button>
+    </div>
+
+    <!-- PROOF 4 -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Proof 4: Batch Normalization in Training vs Evaluation (Inference)</h3>
+        <span class="pts">4 Marks</span>
+      </div>
+      <div style="font-size: 0.95rem;">
+        <strong>1. Training Mode (<code>model.train()</code>):</strong><br>
+        • Computes mean $\mu_B$ and variance $\sigma_B^2$ across the current mini-batch: $\mu_B = \frac{1}{m}\sum x_i$, $\sigma_B^2 = \frac{1}{m}\sum(x_i - \mu_B)^2$.<br>
+        • Normalizes current batch: $\hat{x}_i = \frac{x_i - \mu_B}{\sqrt{\sigma_B^2 + \epsilon}}$, then scales and shifts: $y_i = \gamma \hat{x}_i + \beta$ ($\gamma, \beta$ are learnable).<br>
+        • Updates running population statistics via Exponential Moving Average (EMA):<br>
+        &nbsp;&nbsp;$\hat{\mu} \leftarrow (1 - \rho)\hat{\mu} + \rho \mu_B$ and $\hat{\sigma}^2 \leftarrow (1 - \rho)\hat{\sigma}^2 + \rho \sigma_B^2$ (typically $\rho = 0.1$).<br><br>
+        <strong>2. Evaluation / Inference Mode (<code>model.eval()</code>):</strong><br>
+        • <strong>Mini-batch statistics are NOT computed</strong> (batch size can even be 1).<br>
+        • Fixed running statistics $\hat{\mu}$ and $\hat{\sigma}^2$ accumulated during training are used: $\hat{x} = \frac{x - \hat{\mu}}{\sqrt{\hat{\sigma}^2 + \epsilon}}$.<br>
+        • <em>Exam Trap:</em> When freezing a pretrained CNN backbone with <code>requires_grad = False</code>, BN must still be set to <code>eval()</code> mode, otherwise running statistics continue to drift!
+      </div>
+      <button class="action-btn" onclick="markShortDone(4, this)" style="margin-top: 12px;">I Have Memorized This (+5 Marks)</button>
+    </div>
+  </div>
+
+  <!-- TAB 4: LONG BLUEPRINTS -->
+  <div id="tab-long" class="section-panel">
+    <div style="background: var(--accent-glow); border: 1px solid var(--accent); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem;">
+      <strong>🏛️ 2 EXAM-WINNING SYSTEM DESIGN BLUEPRINTS (10 Marks Each):</strong> Write these structured tables and flow diagrams to lock in 20+ marks in Section D!
+    </div>
+
+    <!-- BLUEPRINT 1 -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Blueprint 1: The Master Comparison Table of Object Detectors</h3>
+        <span class="pts">10 Marks</span>
+      </div>
+      <p>If asked to "Compare Two-Stage, One-Stage, and Transformer Detectors" or discuss the evolution of object detection, write this exact 5-dimension table:</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Dimension</th>
+            <th>Two-Stage (Faster R-CNN)</th>
+            <th>One-Stage (YOLO / RetinaNet)</th>
+            <th>Transformer (DETR / Deformable DETR)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Paradigm</strong></td>
+            <td>Proposals + Classification (RPN $\to$ RoIAlign $\to$ Head)</td>
+            <td>Dense single-pass grid regression</td>
+            <td>Direct set prediction with learned object queries</td>
+          </tr>
+          <tr>
+            <td><strong>Anchors Needed?</strong></td>
+            <td>Yes (e.g. 9 anchors per location)</td>
+            <td>Yes in YOLOv2-v5 / RetinaNet; No in FCOS/CenterNet</td>
+            <td><strong>No anchors</strong> (100 query slots)</td>
+          </tr>
+          <tr>
+            <td><strong>Post-processing</strong></td>
+            <td>Requires NMS</td>
+            <td>Requires NMS</td>
+            <td><strong>No NMS needed</strong> (Hungarian 1-to-1 matching)</td>
+          </tr>
+          <tr>
+            <td><strong>Speed vs Accuracy</strong></td>
+            <td>High mAP on small objects, slower (5–15 FPS)</td>
+            <td>Extremely fast (30–120+ FPS), real-time standard</td>
+            <td>High mAP on large objects; Deformable DETR achieves competitive speed</td>
+          </tr>
+          <tr>
+            <td><strong>Class Imbalance Fix</strong></td>
+            <td>Two-stage cascade (RPN rejects 99% background)</td>
+            <td><strong>Focal Loss:</strong> $FL(p_t) = -\alpha_t(1-p_t)^\gamma \log p_t$</td>
+            <td>Bipartite matching with down-weighted $\varnothing$ background class ($w_\varnothing = 0.1$)</td>
+          </tr>
+        </tbody>
+      </table>
+      <button class="action-btn" onclick="markLongDone(1, this)">I Can Draw This Table in Exam (+15 Marks)</button>
+    </div>
+
+    <!-- BLUEPRINT 2 -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">Blueprint 2: Foundation Model 3D Localization Pipeline</h3>
+        <span class="pts">10 Marks</span>
+      </div>
+      <p>If asked to "Design an open-vocabulary 3D detection/segmentation system" (e.g. for robotics or self-driving), present this 4-stage pipeline:</p>
+      <div class="formula-box">
+        [Text Prompt + RGB Image]<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+        STAGE 1: Grounding DINO (Open-Vocabulary 2D Bounding Boxes)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;│ (Pass 2D boxes as prompt)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+        STAGE 2: Segment Anything (SAM) (Pixel-accurate Instance Mask)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+        STAGE 3: Depth Anything (Dense Relative Inverse Depth r)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+        STAGE 4: Metric Calibration (1/Z = s·r + t via camera intrinsics K)<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;&nbsp;&nbsp;▼<br>
+        OUTPUT: 3D Metric Bounding Box (X, Y, Z, W, H, D)
+      </div>
+      <div style="font-size: 0.9rem; margin-top: 10px;">
+        <strong>Key Technical Talking Points:</strong><br>
+        1. <em>Grounding DINO:</em> Fuses text tokens with visual features via cross-attention, avoiding closed vocabulary restrictions.<br>
+        2. <em>SAM:</em> Encoder runs once ($1024 \times 1024 \to 64 \times 64 \times 256$); prompt decoder is lightweight (<10 ms).<br>
+        3. <em>Depth Anything:</em> Predicts monocular relative inverse depth $r$. Aligned to metric depth $Z$ using ground plane reference or pinhole height formula $Z = \frac{f_y H_o}{h}$.<br>
+        4. <em>Throughput:</em> Sequential latency $T_{seq} = \sum T_k \approx 600$ ms. Pipelined throughput $= 1000 / \max(T_k) \approx 1000 / 450 = 2.22$ FPS.
+      </div>
+      <button class="action-btn" onclick="markLongDone(2, this)" style="margin-top: 12px;">I Can Write This Pipeline in Exam (+15 Marks)</button>
+    </div>
+  </div>
+
+  <!-- TAB 5: STUDY PLAN -->
+  <div id="tab-plan" class="section-panel">
+    <div class="card">
+      <h3 class="card-title">The 120-Minute Emergency Roadmap to 70+</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Time Left</th>
+            <th>Block</th>
+            <th>What to Do Right Now</th>
+            <th>Target Marks</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>120 – 85 min</strong><br>(35 mins)</td>
+            <td><strong>Section B: Numericals Drill</strong></td>
+            <td>Solve all 5 interactive problems in the <strong>Sec B tab</strong>. Type the numbers in until you get green checks. Know Conv, RANSAC, IoU, Stereo, and Confusion Matrix cold.</td>
+            <td><strong style="color: var(--accent);">+30 Marks</strong></td>
+          </tr>
+          <tr>
+            <td><strong>85 – 60 min</strong><br>(25 mins)</td>
+            <td><strong>Section A: 10 MCQ Traps</strong></td>
+            <td>Complete the 10 questions in the <strong>Sec A tab</strong>. Memorize the 10 rules (Harris unchanged by brightness, Lowe ratio reject when close to 1, raising NMS keeps more boxes, etc.).</td>
+            <td><strong style="color: var(--accent);">+20 Marks</strong></td>
+          </tr>
+          <tr>
+            <td><strong>60 – 35 min</strong><br>(25 mins)</td>
+            <td><strong>Section C: 4 Ready Proofs</strong></td>
+            <td>Read the 4 proofs in the <strong>Sec C tab</strong>. Write the Dice vs IoU proof on a blank sheet of paper from memory once. Note E (5 DOF) vs F (7 DOF).</td>
+            <td><strong style="color: var(--accent);">+15 Marks</strong></td>
+          </tr>
+          <tr>
+            <td><strong>35 – 15 min</strong><br>(20 mins)</td>
+            <td><strong>Section D: Design Blueprints</strong></td>
+            <td>Study the <strong>5-dimension Detector Table</strong> and the <strong>Foundation Pipeline flow</strong> in Sec D tab. Practice drawing the block diagram.</td>
+            <td><strong style="color: var(--accent);">+20 Marks</strong></td>
+          </tr>
+          <tr>
+            <td><strong>15 – 0 min</strong><br>(15 mins)</td>
+            <td><strong>Final Review & Breathe</strong></td>
+            <td>Check conventions: Continuous box coords (no +1), RANSAC always round UP, Dice $\ge$ IoU, Confusion matrix: Rows = GT, Cols = Pred. Drink water and sit the exam with confidence!</td>
+            <td><strong style="color: var(--success);">Total: 85 Marks</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// TIMER
+let timeLeft = 120 * 60;
+setInterval(() => {
+  if (timeLeft > 0) {
+    timeLeft--;
+    const h = String(Math.floor(timeLeft / 3600)).padStart(2, '0');
+    const m = String(Math.floor((timeLeft % 3600) / 60)).padStart(2, '0');
+    const s = String(timeLeft % 60).padStart(2, '0');
+    document.getElementById('timer').innerText = `${h}:${m}:${s}`;
+  }
+}, 1000);
+
+// SCORES
+let scoreA = 0, scoreB = 0, scoreC = 0, scoreD = 0;
+function updateScore() {
+  const total = scoreA + scoreB + scoreC + scoreD;
+  document.getElementById('total-score').innerText = total;
+  document.getElementById('sc-a').innerText = scoreA;
+  document.getElementById('sc-b').innerText = scoreB;
+  document.getElementById('sc-c').innerText = scoreC;
+  document.getElementById('sc-d').innerText = scoreD;
+  
+  const pct = Math.min(100, Math.round((total / 100) * 100));
+  document.getElementById('p-bar').style.width = pct + '%';
+
+  const verd = document.getElementById('verdict');
+  if (total >= 70) {
+    verd.innerHTML = '🔥 <span style="color: #3fb950; font-weight: 800;">70+ SECURED! YOU ARE READY TO CRUSH IT!</span>';
+  } else if (total >= 50) {
+    verd.innerHTML = '⚡ <span style="color: #d29922; font-weight: 700;">Pass Guaranteed! Do 2 more tabs to cross 70!</span>';
+  } else {
+    verd.innerHTML = '⚠️ <span style="color: #f85149;">Incomplete - Complete Section B & A right now!</span>';
+  }
+}
+
+// TABS
+function switchTab(id) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+function toggleReveal(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+}
+
+// NUMERICAL CHECKS
+let n1Done = false, n2Done = false, n3Done = false, n4Done = false, n5Done = false;
+
+function checkN1() {
+  if (n1Done) return;
+  const w = parseInt(document.getElementById('ans-n1-w').value);
+  const p = parseInt(document.getElementById('ans-n1-p').value);
+  const fb = document.getElementById('fb-n1');
+  if (w === 112 && p === 73856) {
+    fb.className = 'feedback-box show feedback-ok';
+    fb.innerHTML = '✅ <strong>PERFECT! (+6 Marks)</strong> W_out = 112 px, Params = 73,856.';
+    scoreB += 6; n1Done = true; updateScore();
+  } else {
+    fb.className = 'feedback-box show feedback-err';
+    fb.innerHTML = '❌ Not quite. Expected: W_out = <strong>112</strong>, Params = <strong>73856</strong>. Click "Show Working" below to review.';
+  }
+}
+
+function checkN2() {
+  if (n2Done) return;
+  const n = parseInt(document.getElementById('ans-n2').value);
+  const fb = document.getElementById('fb-n2');
+  if (n === 72) {
+    fb.className = 'feedback-box show feedback-ok';
+    fb.innerHTML = '✅ <strong>EXACT! (+6 Marks)</strong> Ratio gives 71.36 $\to$ rounded UP to 72!';
+    scoreB += 6; n2Done = true; updateScore();
+  } else if (n === 71) {
+    fb.className = 'feedback-box show feedback-err';
+    fb.innerHTML = '⚠️ <strong>Close! (+3 partial marks)</strong> You rounded down. RANSAC iteration counts must ALWAYS be rounded UP to guarantee probability p. Answer is 72.';
+    scoreB += 3; n2Done = true; updateScore();
+  } else {
+    fb.className = 'feedback-box show feedback-err';
+    fb.innerHTML = '❌ Incorrect. Correct answer is <strong>72</strong>. Click "Show Working" below.';
+  }
+}
+
+function checkN3() {
+  if (n3Done) return;
+  const val = parseFloat(document.getElementById('ans-n3').value);
+  const fb = document.getElementById('fb-n3');
+  if (Math.abs(val - 0.143) < 0.005) {
+    fb.className = 'feedback-box show feedback-ok';
+    fb.innerHTML = '✅ <strong>CORRECT! (+6 Marks)</strong> Inter = 400, Union = 2800 $\to$ IoU = 400/2800 ≈ 0.143.';
+    scoreB += 6; n3Done = true; updateScore();
+  } else {
+    fb.className = 'feedback-box show feedback-err';
+    fb.innerHTML = '❌ Incorrect. Expected <strong>0.143</strong> (1/7). Remember: continuous coords, NO +1.';
+  }
+}
+
+function checkN4() {
+  if (n4Done) return;
+  const d = parseFloat(document.getElementById('ans-n4-d').value);
+  const z = parseFloat(document.getElementById('ans-n4-z').value);
+  const fb = document.getElementById('fb-n4');
+  if (Math.abs(d - 40) < 0.1 && Math.abs(z - 0.05) < 0.005) {
+    fb.className = 'feedback-box show feedback-ok';
+    fb.innerHTML = '✅ <strong>EXCELLENT! (+6 Marks)</strong> Disparity = 40 px, ΔZ = 0.05 m (5 cm).';
+    scoreB += 6; n4Done = true; updateScore();
+  } else {
+    fb.className = 'feedback-box show feedback-err';
+    fb.innerHTML = '❌ Expected: Disparity = <strong>40</strong>, ΔZ = <strong>0.05</strong>. See working below.';
+  }
+}
+
+function checkN5() {
+  if (n5Done) return;
+  const iou = parseFloat(document.getElementById('ans-n5-iou').value);
+  const dice = parseFloat(document.getElementById('ans-n5-dice').value);
+  const fb = document.getElementById('fb-n5');
+  if (Math.abs(iou - 0.6) < 0.02 && Math.abs(dice - 0.75) < 0.02) {
+    fb.className = 'feedback-box show feedback-ok';
+    fb.innerHTML = '✅ <strong>SPOT ON! (+6 Marks)</strong> IoU = 0.60, Dice = 0.75. Notice Dice ≥ IoU!';
+    scoreB += 6; n5Done = true; updateScore();
+  } else {
+    fb.className = 'feedback-box show feedback-err';
+    fb.innerHTML = '❌ Expected: IoU = <strong>0.60</strong>, Dice = <strong>0.75</strong>. See working below.';
+  }
+}
+
+// SHORT ANSWERS
+let shortsDone = {};
+function markShortDone(id, btn) {
+  if (!shortsDone[id]) {
+    shortsDone[id] = true;
+    scoreC += 5;
+    btn.style.background = '#238636';
+    btn.innerText = '✓ Mastered (+5 Marks)';
+    btn.disabled = true;
+    updateScore();
+  }
+}
+
+// LONG ANSWERS
+let longsDone = {};
+function markLongDone(id, btn) {
+  if (!longsDone[id]) {
+    longsDone[id] = true;
+    scoreD += 15;
+    btn.style.background = '#238636';
+    btn.innerText = '✓ Mastered Blueprint (+15 Marks)';
+    btn.disabled = true;
+    updateScore();
+  }
+}
+
+// MCQS DATA
+const MCQS = [
+  {
+    q: "1. A constant brightness of +40 is added to every pixel in an image. What happens to the Harris corner response R?",
+    opts: [
+      "A. R increases because pixel intensities are higher",
+      "B. R is completely UNCHANGED because derivatives ∇(I + 40) = ∇I",
+      "C. R is multiplied by 40²",
+      "D. R becomes negative"
+    ],
+    ans: 1,
+    exp: "Harris is built strictly from spatial image derivatives (Ix, Iy). Adding a constant scalar offset produces zero change in gradients: d(I+c)/dx = dI/dx. Thus M and R are 100% unchanged!"
+  },
+  {
+    q: "2. Lowe's ratio test: nearest neighbor distance d1 = 0.30, second nearest d2 = 0.34, threshold τ = 0.80. What is the decision?",
+    opts: [
+      "A. ACCEPTED because d1 is very small in absolute terms",
+      "B. ACCEPTED because d1 < d2",
+      "C. REJECTED because ratio d1/d2 = 0.88 > 0.80 (ambiguous match)",
+      "D. REJECTED because d2 - d1 < 0.10"
+    ],
+    ans: 2,
+    exp: "Ratio = 0.30 / 0.34 = 0.882 > 0.80. When the ratio is close to 1, the best and second-best candidates are almost equally similar, meaning the match is ambiguous."
+  },
+  {
+    q: "3. If a detector's NMS IoU threshold is RAISED from 0.5 to 0.7, what happens to final bounding box detections?",
+    opts: [
+      "A. Fewer boxes are suppressed, so MORE detections survive",
+      "B. More boxes are suppressed, so fewer detections survive",
+      "C. The exact same boxes survive with higher scores",
+      "D. All boxes with score < 0.7 are removed"
+    ],
+    ans: 0,
+    exp: "NMS only suppresses boxes whose IoU with the top detection EXCEEDS the threshold. A higher threshold (0.7) is MORE PERMISSIVE: fewer candidate boxes exceed 0.7, so fewer are suppressed and MORE boxes survive."
+  },
+  {
+    q: "4. In the Focal Loss FL(p_t) = -α_t(1 - p_t)^γ log(p_t), what happens when the focusing parameter γ = 0?",
+    opts: [
+      "A. The loss becomes zero for all examples",
+      "B. It becomes smooth L1 loss",
+      "C. It reduces to standard α-balanced Cross-Entropy loss",
+      "D. Only false negatives are penalized"
+    ],
+    ans: 2,
+    exp: "When γ = 0, the modulating factor (1 - p_t)^0 = 1 for all samples, reducing the formula directly to standard α-balanced cross-entropy."
+  },
+  {
+    q: "5. A neural network has inverted Dropout with p = 0.5. What does the layer do during model.eval() (inference)?",
+    opts: [
+      "A. Zeroes 50% of the activations and scales the rest by 2",
+      "B. Multiplies all activations by 0.5",
+      "C. Passes all activations through UNCHANGED (identity)",
+      "D. Drops the same units as the last training step"
+    ],
+    ans: 2,
+    exp: "In inverted dropout, scaling by 1/(1-p) is performed during TRAINING. At test time in eval mode, dropout is completely switched off and acts as the identity mapping!"
+  },
+  {
+    q: "6. Which statement correctly describes the mathematical relationship between the Dice coefficient and IoU?",
+    opts: [
+      "A. IoU is always strictly greater than Dice",
+      "B. Dice ≥ IoU is always true (Dice = 2·IoU / (1 + IoU))",
+      "C. Dice and IoU are completely unrelated for binary masks",
+      "D. Dice is equal to IoU squared"
+    ],
+    ans: 1,
+    exp: "Since Dice = 2·IoU / (1 + IoU) and IoU ∈ [0, 1], Dice is ALWAYS greater than or equal to IoU (e.g. IoU = 0.50 gives Dice = 0.667)."
+  },
+  {
+    q: "7. What are the Degrees of Freedom (DOF) of the Homography (H), Fundamental (F), and Essential (E) matrices?",
+    opts: [
+      "A. H: 9, F: 9, E: 9",
+      "B. H: 8, F: 8, E: 6",
+      "C. H: 8, F: 7, E: 5",
+      "D. H: 6, F: 7, E: 5"
+    ],
+    ans: 2,
+    exp: "Homography H = 8 DOF (9 entries - 1 scale). Fundamental F = 7 DOF (9 entries - 1 scale - 1 rank-2 constraint). Essential E = 5 DOF (3 rotation + 2 translation direction)."
+  },
+  {
+    q: "8. Why does DETR (DEtection TRansformer) NOT require Non-Maximum Suppression (NMS)?",
+    opts: [
+      "A. Because DETR runs at 120 FPS",
+      "B. Because it uses bipartite matching (Hungarian algorithm) to force direct 1-to-1 object assignment",
+      "C. Because DETR uses anchor boxes that never overlap",
+      "D. Because DETR only works on images with a single object"
+    ],
+    ans: 1,
+    exp: "DETR treats detection as a direct set prediction problem. During training, the Hungarian bipartite matching pairs each prediction with at most one ground truth object, penalizing duplicate boxes via the background class ∅."
+  },
+  {
+    q: "9. How does doubling the target distance Z (from 5m to 10m) affect stereo depth error ΔZ?",
+    opts: [
+      "A. Depth error doubles (2×)",
+      "B. Depth error quadruples (4×) because ΔZ ∝ Z²",
+      "C. Depth error is halved",
+      "D. Depth error is unchanged"
+    ],
+    ans: 1,
+    exp: "From ΔZ ≈ (Z² / fB)·Δd, stereo depth error is proportional to the square of distance (Z²). Doubling Z multiplies depth uncertainty by 2² = 4×!"
+  },
+  {
+    q: "10. In a confusion matrix for image segmentation, what do ROWS and COLUMNS represent?",
+    opts: [
+      "A. Rows = Predictions, Columns = Ground Truth",
+      "B. Rows = Ground Truth, Columns = Predictions",
+      "C. Rows = Precision, Columns = Recall",
+      "D. Rows = True Positives, Columns = True Negatives"
+    ],
+    ans: 1,
+    exp: "Convention: ROWS = Ground Truth classes, COLUMNS = Predictions. Precision uses column sums (TP / ColumnSum); Recall uses row sums (TP / RowSum)."
+  }
+];
+
+function renderMCQs() {
+  const container = document.getElementById('mcq-container');
+  container.innerHTML = '';
+  MCQS.forEach((m, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = `mcq-card-${idx}`;
+    card.innerHTML = `
+      <div class="card-header">
+        <h4 style="margin:0; font-size:1rem; color:var(--text-bright);">${m.q}</h4>
+        <span class="pts">2 Marks</span>
+      </div>
+      <div id="opts-${idx}">
+        ${m.opts.map((opt, oIdx) => `
+          <button class="q-opt" onclick="answerMCQ(${idx}, ${oIdx})">${opt}</button>
+        `).join('')}
+      </div>
+      <div id="fb-mcq-${idx}" class="feedback-box"></div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+let mcqAnswered = {};
+function answerMCQ(qIdx, optIdx) {
+  if (mcqAnswered[qIdx]) return;
+  mcqAnswered[qIdx] = true;
+  const m = MCQS[qIdx];
+  const fb = document.getElementById(`fb-mcq-${qIdx}`);
+  const optBtns = document.getElementById(`opts-${qIdx}`).querySelectorAll('.q-opt');
+
+  if (optIdx === m.ans) {
+    optBtns[optIdx].classList.add('correct');
+    fb.className = 'feedback-box show feedback-ok';
+    fb.innerHTML = `✅ <strong>CORRECT! (+2 Marks)</strong> ${m.exp}`;
+    scoreA += 2;
+  } else {
+    optBtns[optIdx].classList.add('wrong');
+    optBtns[m.ans].classList.add('correct');
+    fb.className = 'feedback-box show feedback-err';
+    fb.innerHTML = `❌ <strong>TRAP TRIGGERED!</strong> ${m.exp}`;
+  }
+  updateScore();
+}
+
+renderMCQs();
+updateScore();
+</script>
+
+</body>
+</html>
