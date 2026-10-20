@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Fast object detection flashcards for Computer Vision exam revision.">
+  <title>Object Detection Sprint · Flashcards</title>
+  <style>
+    :root {
+      --bg: #f5f7fc; --card: #fff; --ink: #172033; --muted: #687386; --line: #dfe5ef;
+      --brand: #4058d6; --brand-2: #745cf5; --soft: #eef1ff; --green: #147b55; --green-bg: #e8f8f0;
+      --orange: #b96d1f; --orange-bg: #fff4e5; --shadow: 0 16px 42px rgba(36, 51, 95, .1);
+    }
+    [data-theme="dark"] {
+      --bg: #101522; --card: #171d2d; --ink: #eef2ff; --muted: #aab3c7; --line: #303b52;
+      --brand: #9aa7ff; --brand-2: #b09fff; --soft: #292f54; --green: #70d4a9; --green-bg: #17382f;
+      --orange: #ffbf79; --orange-bg: #3e2c18; --shadow: 0 16px 42px rgba(0, 0, 0, .22);
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif; }
+    button, select { font: inherit; } button { cursor: pointer; } a { color: var(--brand); text-decoration: none; }
+    .shell { max-width: 1160px; margin: auto; padding: 26px 20px 70px; }
+    .topbar, .top-actions, .hero-stats, .mode-row, .card-actions, .summary { display: flex; align-items: center; }
+    .topbar { justify-content: space-between; gap: 16px; margin-bottom: 25px; }
+    .brand { display: flex; align-items: center; gap: 10px; color: var(--ink); font-weight: 850; letter-spacing: -.03em; }
+    .logo { display: grid; place-items: center; width: 39px; height: 39px; border-radius: 12px; color: #fff; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 8px 20px #4058d640; }
+    .brand small { display: block; color: var(--muted); font-size: .75rem; letter-spacing: 0; }
+    .top-actions { gap: 8px; }
+    .btn { border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; background: var(--card); color: var(--ink); }
+    .btn.primary { border-color: var(--brand); background: var(--brand); color: #fff; font-weight: 800; }
+    .hero { display: grid; grid-template-columns: 1.2fr .8fr; gap: 22px; margin-bottom: 18px; }
+    .hero-copy, .hero-visual { border-radius: 24px; border: 1px solid var(--line); box-shadow: var(--shadow); }
+    .hero-copy { padding: 34px; color: #fff; background: linear-gradient(135deg, #252e65, #5140a1); }
+    .eyebrow { color: #d4d9ff; font-size: .75rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { max-width: 670px; margin: 10px 0 14px; font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1.02; letter-spacing: -.065em; }
+    .hero-copy p { max-width: 620px; margin: 0; color: #e5e8ff; }
+    .hero-stats { flex-wrap: wrap; gap: 8px; margin-top: 23px; }
+    .stat { padding: 8px 11px; border: 1px solid #ffffff2e; border-radius: 10px; background: #ffffff16; font-size: .86rem; }
+    .hero-visual { display: grid; place-items: center; min-height: 275px; padding: 18px; background: var(--card); overflow: hidden; }
+    .hero-visual svg { width: 100%; max-width: 400px; height: auto; }
+    .summary { justify-content: space-between; gap: 18px; padding: 16px 19px; margin-bottom: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--card); box-shadow: var(--shadow); }
+    .summary strong { font-size: 1.15rem; } .summary small { display: block; color: var(--muted); }
+    .progress { flex: 1; height: 10px; overflow: hidden; border-radius: 99px; background: var(--soft); }
+    .progress i { display: block; width: 0; height: 100%; background: linear-gradient(90deg, var(--brand), #57c89d); transition: width .25s; }
+    .layout { display: grid; grid-template-columns: 220px 1fr; gap: 27px; align-items: start; }
+    .sidebar { position: sticky; top: 16px; padding: 16px; border: 1px solid var(--line); border-radius: 17px; background: var(--card); }
+    .sidebar strong { display: block; margin-bottom: 10px; color: var(--muted); font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; }
+    .sidebar button { display: block; width: 100%; padding: 8px 9px; border: 0; border-radius: 8px; text-align: left; color: var(--muted); background: transparent; }
+    .sidebar button:hover, .sidebar button.active { color: var(--brand); background: var(--soft); }
+    .study-head { display: flex; justify-content: space-between; align-items: end; gap: 15px; margin: 5px 0 13px; }
+    h2 { margin: 0; font-size: 1.55rem; letter-spacing: -.04em; } .study-head p { margin: 3px 0 0; color: var(--muted); font-size: .9rem; }
+    .mode-row { gap: 8px; flex-wrap: wrap; } select { padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; color: var(--ink); background: var(--card); }
+    .flashcard { perspective: 1200px; min-height: 388px; margin-bottom: 13px; }
+    .card-inner { position: relative; min-height: 388px; transform-style: preserve-3d; transition: transform .55s cubic-bezier(.2,.7,.2,1); }
+    .flashcard.flipped .card-inner { transform: rotateY(180deg); }
+    .face { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 27px; border: 1px solid var(--line); border-radius: 22px; background: var(--card); box-shadow: var(--shadow); backface-visibility: hidden; }
+    .back { transform: rotateY(180deg); background: linear-gradient(145deg, var(--card), var(--soft)); }
+    .card-kicker { display: flex; justify-content: space-between; gap: 10px; color: var(--brand); font-size: .76rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+    .card-tag { color: var(--muted); font-size: .78rem; letter-spacing: 0; }
+    .face h3 { max-width: 750px; margin: 35px 0 10px; font-size: clamp(1.45rem, 3vw, 2.15rem); line-height: 1.18; letter-spacing: -.045em; }
+    .prompt { max-width: 700px; color: var(--muted); font-size: 1.05rem; }
+    .hint { align-self: flex-start; margin-top: auto; padding: 10px 13px; border-radius: 11px; color: var(--brand); background: var(--soft); font-size: .88rem; }
+    .answer { max-width: 790px; margin-top: 21px; font-size: 1.03rem; }
+    .answer strong { color: var(--brand); } .answer ul { padding-left: 20px; } .formula { padding: 12px 14px; border-left: 4px solid var(--brand); border-radius: 7px; color: var(--ink); background: var(--soft); font: 600 .96rem/1.65 ui-monospace, Consolas, monospace; }
+    .memory { align-self: flex-start; margin-top: auto; padding: 11px 14px; border-radius: 11px; color: var(--green); background: var(--green-bg); font-size: .9rem; }
+    .card-actions { justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+    .card-actions .right { display: flex; gap: 8px; } .btn.again { color: var(--orange); border-color: var(--orange); } .btn.mastered { color: var(--green); border-color: var(--green); }
+    .keyboard { color: var(--muted); font-size: .8rem; }
+    .empty { padding: 45px 20px; border: 1px dashed var(--line); border-radius: 18px; color: var(--muted); text-align: center; background: var(--card); }
+    .exam-map { margin-top: 27px; padding: 22px; border: 1px solid var(--line); border-radius: 18px; background: var(--card); }
+    .exam-map h2 { font-size: 1.25rem; } .map-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+    .map-item { padding: 14px; border-radius: 13px; background: var(--soft); } .map-item b { display: block; margin-bottom: 3px; }
+    @media (max-width: 850px) { .hero, .layout { grid-template-columns: 1fr; } .sidebar { position: static; display: flex; flex-wrap: wrap; gap: 4px; } .sidebar strong { width: 100%; } .sidebar button { width: auto; } }
+    @media (max-width: 560px) { .shell { padding: 17px 13px 50px; } .hero-copy { padding: 26px 21px; } .summary, .study-head { align-items: stretch; flex-direction: column; } .face { padding: 21px; } .flashcard, .card-inner { min-height: 430px; } .map-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <nav class="topbar" aria-label="Study navigation">
+      <a class="brand" href="README.md"><span class="logo">▣</span><span>CV Exam Prep<small>Object Detection Sprint</small></span></a>
+      <div class="top-actions"><a class="btn" href="mcq_golden_traps.html">MCQs →</a><button class="btn" id="theme" type="button">◐ Theme</button></div>
+    </nav>
+    <header class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow">Sessions 06 · 07 · 08</div>
+        <h1>Object detection, learned in the right order.</h1>
+        <p>Use active recall to master the highest-yield topic: first understand the picture, then retrieve the rule, then mark only what you truly know.</p>
+        <div class="hero-stats"><span class="stat"><b>26–30</b> predicted marks</span><span class="stat"><b>3</b> detector generations</span><span class="stat"><b>14</b> focused cards</span></div>
+      </div>
+      <div class="hero-visual" aria-label="Object detection evolution diagram">
+        <svg viewBox="0 0 410 250" role="img">
+          <defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#4058d6"/><stop offset="1" stop-color="#745cf5"/></linearGradient></defs>
+          <rect x="28" y="57" width="105" height="136" rx="14" fill="#eef1ff" stroke="#4058d6" stroke-width="3"/><rect x="58" y="82" width="52" height="67" rx="7" fill="url(#g)"/><path d="M68 138l13-17 10 10 14-20 10 27" fill="none" stroke="#fff" stroke-width="3"/><text x="39" y="218" fill="#687386" font-size="12">TWO-STAGE</text>
+          <path d="M138 125h39" stroke="#745cf5" stroke-width="4"/><path d="m168 115 12 10-12 10" fill="none" stroke="#745cf5" stroke-width="4"/>
+          <rect x="183" y="57" width="105" height="136" rx="14" fill="#f4f0ff" stroke="#745cf5" stroke-width="3"/><path d="M204 85h64M204 116h64M204 147h64" stroke="#745cf5" stroke-width="5" stroke-linecap="round"/><circle cx="216" cy="85" r="5" fill="#f39a4b"/><circle cx="251" cy="116" r="5" fill="#55ba91"/><text x="201" y="218" fill="#687386" font-size="12">ONE-STAGE</text>
+          <path d="M293 125h39" stroke="#745cf5" stroke-width="4"/><path d="m323 115 12 10-12 10" fill="none" stroke="#745cf5" stroke-width="4"/>
+          <rect x="338" y="57" width="45" height="136" rx="14" fill="#e8f8f0" stroke="#147b55" stroke-width="3"/><circle cx="360" cy="91" r="8" fill="#147b55"/><circle cx="360" cy="125" r="8" fill="#147b55"/><circle cx="360" cy="159" r="8" fill="#147b55"/><text x="335" y="218" fill="#687386" font-size="12">DETR</text>
+        </svg>
+      </div>
+    </header>
+    <section class="summary" aria-label="Flashcard progress"><div><small>Mastery</small><strong id="mastery">0 / 14</strong></div><div class="progress"><i id="progress"></i></div><div><small>Due now</small><strong id="due">14</strong></div></section>
+    <div class="layout">
+      <aside class="sidebar"><strong>Study route</strong><button class="active" data-filter="all" type="button">All cards</button><button data-filter="due" type="button">Due / learning</button><button data-filter="mastered" type="button">Mastered</button><button data-filter="foundations" type="button">Foundations</button><button data-filter="generations" type="button">Detector generations</button><button data-filter="exam" type="button">Exam answers</button></aside>
+      <section>
+        <div class="study-head"><div><h2 id="section-title">Active recall deck</h2><p id="position">Card 1 of 14 · Click the card to reveal the answer.</p></div><div class="mode-row"><button class="btn" id="shuffle" type="button">Shuffle</button><button class="btn" id="reset" type="button">Reset progress</button></div></div>
+        <div id="deck"></div>
+        <section class="exam-map"><h2>After this deck: the fastest exam route</h2><div class="map-grid"><div class="map-item"><b>01 · Numericals</b><span>IoU, NMS and AP: practise the calculation steps.</span></div><div class="map-item"><b>02 · Short answer</b><span>Write RoIAlign vs RoIPool and why DETR needs no NMS.</span></div><div class="map-item"><b>03 · Long answer</b><span>Reproduce the Faster R-CNN / YOLO / DETR comparison table.</span></div></div></section>
+      </section>
+    </div>
+  </main>
+  <script>
+    const cards = [
+      { tag: "Foundation", group: "foundations", front: "What does object detection add to image classification?", back: "<p><strong>Classification</strong> asks: “Is there a dog?” Detection asks: “Where are all the dogs, what classes are they, and what tight box surrounds each one?”</p><p>It must predict a variable number of objects, their locations, and their classes.</p>", memory: "Detection = what + where + how many." },
+      { tag: "Foundation", group: "foundations", front: "Why is object detection difficult in the real world?", back: "<ul><li>The number of objects is unknown: 0, 1, or 50.</li><li>Most pixels are background, creating extreme class imbalance.</li><li>Many candidate boxes can describe the same object.</li></ul>", memory: "Variable count · background imbalance · duplicate boxes." },
+      { tag: "Vocabulary", group: "foundations", front: "What is a bounding box, and what is the continuous-coordinate trap?", back: "<p>A box is <strong>(x₁, y₁, x₂, y₂)</strong>: top-left and bottom-right corners.</p><div class='formula'>width = x₂ − x₁<br>height = y₂ − y₁<br>area = (x₂ − x₁)(y₂ − y₁)</div><p>For this course, coordinates are continuous: <strong>do not add +1</strong>.</p>", memory: "Continuous boxes: no +1." },
+      { tag: "Numerical", group: "exam", front: "What is IoU and how is it used?", back: "<p>IoU measures agreement between a predicted box and a ground-truth box:</p><div class='formula'>IoU = Area(A ∩ B) / Area(A ∪ B)<br>Union = Area(A) + Area(B) − Intersection</div><p>It ranges from 0 (no overlap) to 1 (perfect match). A common exam rule is IoU ≥ 0.5 → true positive.</p>", memory: "Overlap divided by combined area." },
+      { tag: "Post-processing", group: "exam", front: "How does Non-Maximum Suppression remove duplicate boxes?", back: "<ol><li>Sort boxes by confidence.</li><li>Keep the highest-scoring box.</li><li>Remove remaining boxes whose IoU with it exceeds the threshold.</li><li>Repeat with the next surviving box.</li></ol><p>It is the duplicate remover: “there can be only one.”</p>", memory: "Highest score survives; overlapping duplicates are suppressed." },
+      { tag: "Exam trap", group: "exam", front: "What happens when the NMS IoU threshold rises from 0.5 to 0.7?", back: "<p><strong>Fewer boxes are suppressed, so more boxes survive.</strong></p><p>Suppression only happens when overlap is greater than the threshold. A higher threshold is more lenient, not stricter.</p>", memory: "Higher NMS threshold → more boxes survive." },
+      { tag: "Two-stage", group: "generations", front: "What is the core idea of a two-stage detector such as Faster R-CNN?", back: "<p><strong>Propose, then classify.</strong></p><ol><li>A Region Proposal Network (RPN) suggests candidate regions.</li><li>RoIAlign extracts each region from the feature map.</li><li>A head classifies the object and refines the box.</li></ol><p>It is accurate, especially for small objects, but slower.</p>", memory: "RPN → RoIAlign → classification and box refinement." },
+      { tag: "Two-stage", group: "generations", front: "Why does RoIAlign improve on RoIPool?", back: "<p><strong>RoIPool rounds coordinates</strong> to integer bins, causing quantization error and misalignment.</p><p><strong>RoIAlign does not round.</strong> It samples exact floating-point locations with bilinear interpolation, preserving fine details for small objects and masks.</p>", memory: "RoIPool rounds; RoIAlign interpolates." },
+      { tag: "One-stage", group: "generations", front: "What is the core idea of YOLO and other one-stage detectors?", back: "<p><strong>Dense single-pass prediction.</strong> The network predicts boxes and classes directly from feature maps instead of running a separate proposal stage.</p><p>That makes YOLO suitable for real-time video, with a typical speed–accuracy trade-off.</p>", memory: "One pass = fast; dense predictions need duplicate handling." },
+      { tag: "One-stage", group: "generations", front: "Why does RetinaNet use Focal Loss?", back: "<p>Dense detectors see huge numbers of easy background examples and relatively few hard objects. Focal Loss down-weights easy examples:</p><div class='formula'>FL(pₜ) = −αₜ(1 − pₜ)^γ log(pₜ)</div><p>When <strong>γ = 0</strong>, it becomes standard α-balanced cross-entropy.</p>", memory: "Focal Loss focuses gradients on hard examples." },
+      { tag: "Transformers", group: "generations", front: "What is DETR’s key idea?", back: "<p><strong>Direct set prediction.</strong> DETR uses a CNN backbone, Transformer encoder–decoder, and a fixed set of learned object queries. It predicts a set of objects instead of dense anchor candidates.</p><p>It uses no anchors and no greedy NMS.</p>", memory: "Queries, not anchors; set prediction, not post-processing." },
+      { tag: "Transformers", group: "generations", front: "How does Hungarian matching let DETR avoid NMS?", back: "<p>During training, Hungarian bipartite matching assigns predictions to targets one-to-one. Duplicate queries are penalized as background <strong>∅</strong>.</p><p>Because duplicate handling is learned inside the set loss, DETR does not need greedy NMS at inference.</p>", memory: "One object ↔ one query; duplicates become background." },
+      { tag: "Comparison", group: "generations", front: "Compare Faster R-CNN, YOLO / RetinaNet, and DETR in one sentence each.", back: "<ul><li><strong>Faster R-CNN:</strong> two-stage, anchors, RPN + RoIAlign, high accuracy, slower, NMS.</li><li><strong>YOLO / RetinaNet:</strong> one-stage dense prediction, real-time, NMS; RetinaNet uses Focal Loss.</li><li><strong>DETR:</strong> Transformer set prediction, learned queries, no anchors, no NMS.</li></ul>", memory: "Two-stage = accurate; one-stage = fast; DETR = global set prediction." },
+      { tag: "Supporting", group: "exam", front: "Which camera-geometry and CNN facts support the detection topic?", back: "<ul><li>Stereo depth: <strong>Z = fB/d</strong>; depth error grows as <strong>Z²</strong>.</li><li>Degrees of freedom: K = 5, F = 7, E = 5.</li><li>Conv output: <strong>⌊(W − K + 2P)/S⌋ + 1</strong>.</li><li>Parameters with bias: <strong>(K²Cᵢₙ + 1)Cₒᵤₜ</strong>.</li><li>BatchNorm training uses batch statistics; evaluation uses running statistics.</li></ul>", memory: "Pair detection with stereo and CNN arithmetic for 70+." },
+      { tag: "Long answer", group: "exam", front: "What exact 5-point table should you write for a detector comparison?", back: "<ol><li><strong>Architecture:</strong> RPN → RoIAlign vs dense grid vs CNN → Transformer → queries.</li><li><strong>Anchors:</strong> multiple anchors vs anchors / anchor-free vs no anchors.</li><li><strong>Duplicate removal:</strong> NMS vs NMS vs Hungarian matching / no NMS.</li><li><strong>Speed and accuracy:</strong> slower and precise vs real-time vs global context.</li><li><strong>Background:</strong> RPN filtering vs Focal Loss vs down-weighted ∅ class.</li></ol>", memory: "Architecture · anchors · duplicates · speed/accuracy · background." }
+    ];
+    const state = JSON.parse(localStorage.getItem("cv-object-detection-cards") || "{}");
+    let deck = [...cards], index = 0, filter = "all";
+    const deckEl = document.getElementById("deck");
+    function masteredCount() { return cards.filter((_, i) => state[i] === "mastered").length; }
+    function filteredCards() { return cards.map((card, i) => ({ ...card, original: i })).filter(card => filter === "all" || (filter === "due" && state[card.original] !== "mastered") || (filter === "mastered" && state[card.original] === "mastered") || card.group === filter); }
+    function render() {
+      deck = filteredCards(); if (index >= deck.length) index = Math.max(0, deck.length - 1);
+      document.getElementById("section-title").textContent = filter === "all" ? "Active recall deck" : `${filter[0].toUpperCase() + filter.slice(1)} cards`;
+      document.getElementById("position").textContent = deck.length ? `Card ${index + 1} of ${deck.length} · Click the card or press Space to reveal.` : "No cards in this view yet.";
+      if (!deck.length) { deckEl.innerHTML = "<div class='empty'>Nothing here yet. Choose <b>All cards</b> or complete another card.</div>"; return; }
+      const card = deck[index], isMastered = state[card.original] === "mastered";
+      deckEl.innerHTML = `<div class="flashcard" id="flashcard"><div class="card-inner"><article class="face front"><div><div class="card-kicker"><span>${card.tag}</span><span class="card-tag">${isMastered ? "✓ Mastered" : "Learning"}</span></div><h3>${card.front}</h3><p class="prompt">Try to answer out loud before you reveal the back.</p></div><span class="hint">Click to flip · Spacebar</span></article><article class="face back"><div><div class="card-kicker"><span>Answer</span><span class="card-tag">${card.tag}</span></div><div class="answer">${card.back}</div></div><span class="memory">Remember: ${card.memory}</span></article></div></div><div class="card-actions"><span class="keyboard">← → navigate · A = again · M = mastered</span><div class="right"><button class="btn again" data-action="again" type="button">↺ Again</button><button class="btn mastered" data-action="mastered" type="button">✓ Mastered</button><button class="btn primary" data-action="next" type="button">Next card →</button></div></div>`;
+      deckEl.querySelector(".flashcard").addEventListener("click", event => { if (!event.target.closest("button")) event.currentTarget.classList.toggle("flipped"); });
+      deckEl.querySelectorAll("[data-action]").forEach(button => button.addEventListener("click", () => act(button.dataset.action)));
+    }
+    function act(action) {
+      if (!deck.length) return;
+      const card = deck[index];
+      if (action === "again") state[card.original] = "again";
+      if (action === "mastered") state[card.original] = "mastered";
+      localStorage.setItem("cv-object-detection-cards", JSON.stringify(state));
+      if (action !== "next") index = (index + 1) % Math.max(deck.length, 1);
+      else index = (index + 1) % deck.length;
+      updateSummary(); render();
+    }
+    function updateSummary() { const mastered = masteredCount(), due = cards.length - mastered; document.getElementById("mastery").textContent = `${mastered} / ${cards.length}`; document.getElementById("due").textContent = due; document.getElementById("progress").style.width = `${mastered / cards.length * 100}%`; }
+    document.querySelectorAll("[data-filter]").forEach(button => button.addEventListener("click", () => { filter = button.dataset.filter; index = 0; document.querySelectorAll("[data-filter]").forEach(item => item.classList.toggle("active", item === button)); render(); }));
+    document.getElementById("shuffle").addEventListener("click", () => { deck.sort(() => Math.random() - .5); index = 0; render(); });
+    document.getElementById("reset").addEventListener("click", () => { Object.keys(state).forEach(key => delete state[key]); localStorage.removeItem("cv-object-detection-cards"); index = 0; updateSummary(); render(); });
+    document.getElementById("theme").addEventListener("click", () => { const dark = document.documentElement.dataset.theme === "dark"; document.documentElement.dataset.theme = dark ? "light" : "dark"; localStorage.setItem("cv-theme", dark ? "light" : "dark"); });
+    document.addEventListener("keydown", event => { if (event.target.matches("input, select")) return; if (event.key === " ") { event.preventDefault(); document.getElementById("flashcard")?.classList.toggle("flipped"); } if (event.key === "ArrowRight") act("next"); if (event.key === "ArrowLeft") { index = (index - 1 + deck.length) % deck.length; render(); } if (event.key.toLowerCase() === "a") act("again"); if (event.key.toLowerCase() === "m") act("mastered"); });
+    const savedTheme = localStorage.getItem("cv-theme"); if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+    updateSummary(); render();
+  </script>
+</body>
+</html>
