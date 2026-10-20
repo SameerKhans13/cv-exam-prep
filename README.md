@@ -1,6 +1,6 @@
 # Computer Vision: Exam-Prep Study Pack
 
-**Live site:** [imajij.github.io/cv-exam-prep](https://imajij.github.io/cv-exam-prep/) · **Quiz:** [quiz.html](https://imajij.github.io/cv-exam-prep/quiz.html) · **Numericals Lab:** [numericals_formula.html](numericals_formula.html)
+**Live site:** [imajij.github.io/cv-exam-prep](https://imajij.github.io/cv-exam-prep/) · **Quiz:** [quiz.html](https://imajij.github.io/cv-exam-prep/quiz.html) · **Golden Traps MCQs:** [mcq_golden_traps.html](mcq_golden_traps.html) · **Numericals Lab:** [numericals_formula.html](numericals_formula.html)
 
 Detailed notes, practice questions with full solutions, two mock exams, a numericals drill, an interactive quiz and runnable code for the 16-session Computer Vision course. Built for **exam answers**: every formula has its symbols defined, every numerical shows full working, and every MCQ explains why each wrong option is wrong.
 
@@ -11,6 +11,7 @@ Detailed notes, practice questions with full solutions, two mock exams, a numeri
 | Mock exams | 2 full 3-hour papers (100 marks each) with marking schemes |
 | Numericals drill | **67** calculation problems with full working + answer key |
 | Quiz | [`quiz.html`](quiz.html): **119 MCQs**, offline, no dependencies |
+| Golden Traps MCQs | [`mcq_golden_traps.html`](mcq_golden_traps.html): 10 high-yield Section A questions with explanations and next-step links |
 | Numericals Lab | [`numericals_formula.html`](numericals_formula.html): visual formula cards, interactive checkers and fast Python snippets for the five high-yield Section B calculations |
 | Code | 7 short runnable scripts ([`code/`](code/README.md)) |
 

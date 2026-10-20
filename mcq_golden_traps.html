@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Golden Traps · Computer Vision MCQs</title>
+  <style>
+    :root { --bg:#f5f7fb; --card:#fff; --ink:#182033; --muted:#697386; --line:#dfe5ef; --brand:#4058d6; --soft:#eef1ff; --ok:#147b55; --okbg:#e6f7ef; --bad:#b53632; --badbg:#fff0ef; --shadow:0 14px 40px #25356112; }
+    [data-theme=dark] { --bg:#101522; --card:#171d2d; --ink:#eef2ff; --muted:#aab3c7; --line:#303b52; --brand:#9aa7ff; --soft:#292f54; --ok:#70d4a9; --okbg:#17382f; --bad:#ff9c94; --badbg:#3b1d20; --shadow:0 14px 40px #0004; }
+    * { box-sizing:border-box; } body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif; }
+    button { font:inherit; cursor:pointer; } a { color:var(--brand); text-decoration:none; }
+    .wrap { max-width:920px; margin:auto; padding:26px 18px 60px; }
+    .top { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:22px; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:800; } .mark { display:grid; place-items:center; width:38px; height:38px; border-radius:12px; color:#fff; background:linear-gradient(135deg,#4058d6,#725cf5); }
+    .actions { display:flex; gap:8px; } .btn { border:1px solid var(--line); border-radius:10px; padding:8px 12px; color:var(--ink); background:var(--card); }
+    .hero { padding:30px; border-radius:24px; color:#fff; background:linear-gradient(135deg,#252e65,#5140a1); box-shadow:var(--shadow); margin-bottom:18px; }
+    .eyebrow { color:#d4d9ff; font-size:.75rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; } h1 { margin:10px 0 8px; font-size:clamp(2rem,5vw,3.2rem); line-height:1.05; letter-spacing:-.06em; }
+    .hero p { max-width:650px; margin:0; color:#e6e8ff; } .hero-stats { display:flex; flex-wrap:wrap; gap:8px; margin-top:20px; } .stat { padding:7px 11px; border:1px solid #ffffff30; border-radius:10px; background:#ffffff16; font-size:.86rem; }
+    .dashboard { display:flex; align-items:center; gap:15px; margin-bottom:18px; padding:15px 18px; border:1px solid var(--line); border-radius:16px; background:var(--card); box-shadow:var(--shadow); }
+    .score { white-space:nowrap; font-weight:800; } .score small { display:block; color:var(--muted); font-weight:500; font-size:.75rem; } .bar { flex:1; height:10px; overflow:hidden; border-radius:99px; background:var(--soft); } .bar i { display:block; width:0; height:100%; background:linear-gradient(90deg,var(--brand),#55c89d); transition:width .25s; }
+    .question { padding:22px; margin-bottom:14px; border:1px solid var(--line); border-radius:18px; background:var(--card); box-shadow:var(--shadow); scroll-margin-top:16px; }
+    .qhead { display:flex; justify-content:space-between; gap:12px; margin-bottom:8px; } .qnum { color:var(--brand); font-size:.75rem; font-weight:900; letter-spacing:.1em; text-transform:uppercase; } .tag { color:var(--muted); font-size:.78rem; }
+    h2 { margin:4px 0 15px; font-size:1.12rem; line-height:1.4; } .options { display:grid; gap:8px; } .option { display:flex; gap:10px; width:100%; text-align:left; padding:11px 12px; border:1px solid var(--line); border-radius:11px; color:var(--ink); background:var(--card); }
+    .option:hover:not(:disabled) { border-color:var(--brand); background:var(--soft); } .letter { flex:none; display:grid; place-items:center; width:25px; height:25px; border-radius:7px; color:var(--muted); background:var(--soft); font-weight:800; font-size:.82rem; }
+    .option.correct { border-color:var(--ok); background:var(--okbg); } .option.wrong { border-color:var(--bad); background:var(--badbg); } .option:disabled { cursor:default; }
+    .feedback { display:none; margin-top:13px; padding:12px 14px; border-radius:11px; font-size:.9rem; } .feedback.show { display:block; } .feedback.ok { color:var(--ok); background:var(--okbg); border:1px solid var(--ok); } .feedback.bad { color:var(--bad); background:var(--badbg); border:1px solid var(--bad); }
+    .next { display:flex; justify-content:space-between; gap:10px; margin-top:11px; } .next .btn.primary { color:#fff; border-color:var(--brand); background:var(--brand); }
+    .next-section { margin-top:28px; padding:22px; border:1px solid var(--line); border-radius:18px; background:var(--card); } .next-section h2 { margin:0 0 6px; } .next-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:14px; } .next-card { padding:13px; border:1px solid var(--line); border-radius:12px; background:var(--soft); } .next-card b { display:block; margin-bottom:3px; }
+    @media(max-width:600px) { .wrap{padding:16px 12px 45px}.hero{padding:24px 20px}.dashboard{align-items:stretch; flex-direction:column}.next-grid{grid-template-columns:1fr}.top{align-items:flex-start; flex-direction:column}.actions{width:100%}.actions .btn{flex:1} }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <nav class="top" aria-label="Page navigation">
+      <a class="brand" href="README.md"><span class="mark">✓</span><span>CV Exam Prep<small style="display:block;color:var(--muted);font-weight:600">Section A · Golden Traps</small></span></a>
+      <div class="actions"><a class="btn" href="numericals_formula.html">Numericals →</a><button class="btn" id="theme" type="button">◐ Theme</button></div>
+    </nav>
+    <header class="hero">
+      <div class="eyebrow">10 questions · 20 marks</div>
+      <h1>Can you spot the trap?</h1>
+      <p>These are the facts examiners turn into tempting distractors. Answer first, then read the short explanation that locks the rule into memory.</p>
+      <div class="hero-stats"><span class="stat">Instant feedback</span><span class="stat">One mark each</span><span class="stat">No dependencies</span></div>
+    </header>
+    <section class="dashboard" aria-label="Quiz progress">
+      <div class="score"><small>Score</small><span id="score">0 / 10</span></div>
+      <div class="bar"><i id="bar"></i></div>
+      <div class="score"><small>Answered</small><span id="answered">0 / 10</span></div>
+      <button class="btn" id="reset" type="button">Reset</button>
+    </section>
+    <section id="quiz" aria-live="polite"></section>
+    <section class="next-section">
+      <h2>What is coming next?</h2>
+      <p style="margin:0;color:var(--muted)">Finish these traps, then continue in the high-score order.</p>
+      <div class="next-grid">
+        <a class="next-card" href="numericals_formula.html"><b>01 · Numericals</b><span>Secure the 25–30 mark formula section.</span></a>
+        <a class="next-card" href="practice/numericals_drill.md"><b>02 · Drill</b><span>Apply the formulas to fresh exam-style questions.</span></a>
+        <a class="next-card" href="emergency_exam_test.html"><b>03 · Full sprint</b><span>Attempt proofs, blueprints and the timed test.</span></a>
+      </div>
+    </section>
+  </main>
+  <script>
+    const questions = [
+      ["Harris brightness shift", "An image becomes I + c, where c is a constant added to every pixel. What happens to the Harris response?", ["It is unchanged", "It doubles", "It becomes zero", "It changes sign"], 0, "The image derivatives do not change: ∇(I + c) = ∇I. Therefore the structure tensor and Harris response R remain unchanged."],
+      ["Lowe ratio test", "A feature match has d₁/d₂ ≥ τ. What should the matcher do?", ["Accept it as highly distinctive", "Reject it as ambiguous", "Increase d₂ until it passes", "Use Euclidean distance instead"], 1, "A ratio close to 1 means the best and second-best matches are almost equally good. Reject when d₁/d₂ ≥ τ."],
+      ["NMS threshold", "If the NMS IoU threshold changes from 0.5 to 0.7, what generally happens?", ["More boxes are suppressed", "Fewer boxes are suppressed", "All boxes are removed", "The confidence scores become zero"], 1, "A higher threshold is more lenient: boxes need more overlap before suppression, so more boxes survive."],
+      ["Focal loss", "What does focal loss become when γ = 0?", ["Mean squared error", "Standard α-balanced cross-entropy", "IoU loss", "Unweighted hinge loss"], 1, "The focusing factor (1 − pₜ)^γ becomes 1 when γ = 0, leaving α-balanced cross-entropy."],
+      ["Dropout evaluation", "With inverted dropout, what does dropout do during evaluation?", ["Drops half the activations", "Scales activations again", "Acts as the identity", "Adds Gaussian noise"], 2, "Training-time scaling is already built into inverted dropout. In evaluation mode, activations pass through unchanged."],
+      ["Dice and IoU", "Which relationship is always true for IoU and Dice scores?", ["Dice ≤ IoU", "Dice = IoU + 1", "Dice ≥ IoU", "They are unrelated"], 2, "Dice = 2IoU/(1 + IoU). For IoU in [0, 1], Dice is always at least as large as IoU."],
+      ["Camera degrees of freedom", "Which degrees-of-freedom pairing is correct?", ["Intrinsic K = 3", "Homography H = 8", "Projection P = 9", "Essential E = 7"], 1, "The standard values are K = 5, [R|t] = 6, P = 11, H = 8, F = 7 and E = 5."],
+      ["DETR post-processing", "Why does vanilla DETR not require greedy NMS?", ["It predicts only one class", "It uses direct set prediction with one-to-one Hungarian matching", "It has no confidence scores", "It uses larger anchor boxes"], 1, "Hungarian bipartite matching assigns predictions to targets one-to-one, so duplicate detections are handled during training."],
+      ["Depthwise separable convolution", "The approximate parameter ratio (depthwise separable / standard) is:", ["Cout + K²", "1/Cout + 1/K²", "K²/Cin", "Cout/K²"], 1, "Standard: K²CinCout. Depthwise separable: K²Cin + CinCout. Dividing gives approximately 1/Cout + 1/K²."],
+      ["Classifier-free guidance", "In CFG, what is the usual effect of increasing w above 1?", ["More diversity and less prompt fidelity", "Higher prompt fidelity with a diversity trade-off", "No change at all", "It removes the conditional prediction"], 1, "ε̃ = ε(xₜ,∅) + w[ε(xₜ,c) − ε(xₜ,∅)]. Larger w pushes more strongly toward the prompt condition."]
+    ];
+    const letters = ["A", "B", "C", "D"], answers = Array(questions.length).fill(null);
+    const quiz = document.getElementById("quiz");
+    function render() {
+      quiz.innerHTML = questions.map((q, i) => `<article class="question" id="q${i}"><div class="qhead"><span class="qnum">Trap ${String(i + 1).padStart(2, "0")}</span><span class="tag">${q[0]} · 1 mark</span></div><h2>${q[1]}</h2><div class="options">${q[2].map((option, j) => `<button class="option" data-q="${i}" data-answer="${j}" type="button"><span class="letter">${letters[j]}</span><span>${option}</span></button>`).join("")}</div><div class="feedback" id="feedback${i}"></div><div class="next">${i ? `<button class="btn" data-jump="${i - 1}" type="button">↑ Previous</button>` : "<span></span>"}${i < questions.length - 1 ? `<button class="btn primary" data-jump="${i + 1}" type="button">Next →</button>` : "<span></span>"}</div></article>`).join("");
+      quiz.addEventListener("click", handleClick);
+    }
+    function handleClick(event) {
+      const button = event.target.closest("button"); if (!button) return;
+      if (button.dataset.jump) return document.getElementById(`q${button.dataset.jump}`).scrollIntoView({ behavior: "smooth" });
+      if (button.dataset.q === undefined || answers[button.dataset.q] !== null) return;
+      const i = Number(button.dataset.q), picked = Number(button.dataset.answer), correct = questions[i][3];
+      answers[i] = picked; document.querySelectorAll(`[data-q="${i}"]`).forEach(option => { option.disabled = true; if (Number(option.dataset.answer) === correct) option.classList.add("correct"); });
+      if (picked !== correct) button.classList.add("wrong");
+      const feedback = document.getElementById(`feedback${i}`); feedback.className = `feedback show ${picked === correct ? "ok" : "bad"}`; feedback.innerHTML = `<b>${picked === correct ? "Correct — 1 mark." : `Not quite — the answer is ${letters[correct]}.`}</b> ${questions[i][4]}`;
+      update();
+    }
+    function update() { const done = answers.filter(answer => answer !== null).length, score = answers.reduce((sum, answer, i) => sum + (answer === questions[i][3] ? 1 : 0), 0); document.getElementById("score").textContent = `${score} / 10`; document.getElementById("answered").textContent = `${done} / 10`; document.getElementById("bar").style.width = `${done * 10}%`; }
+    document.getElementById("reset").addEventListener("click", () => { answers.fill(null); render(); update(); window.scrollTo({ top: 0, behavior: "smooth" }); });
+    document.getElementById("theme").addEventListener("click", () => { const dark = document.documentElement.dataset.theme === "dark"; document.documentElement.dataset.theme = dark ? "light" : "dark"; localStorage.setItem("cv-theme", dark ? "light" : "dark"); });
+    const savedTheme = localStorage.getItem("cv-theme"); if (savedTheme) document.documentElement.dataset.theme = savedTheme;
+    render(); update();
+  </script>
+</body>
+</html>
