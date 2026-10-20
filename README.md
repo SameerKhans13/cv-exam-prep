@@ -1,6 +1,6 @@
 # Computer Vision: Exam-Prep Study Pack
 
-**Live site:** [imajij.github.io/cv-exam-prep](https://imajij.github.io/cv-exam-prep/) · **Final 50 MCQ Test:** [final_50_mcq_test.html](final_50_mcq_test.html) · **Quiz:** [quiz.html](https://imajij.github.io/cv-exam-prep/quiz.html) · **Assignment 01 — Homography:** [assignment_01_homography.html](assignment_01_homography.html) · **Assignment 02 — Food Retrieval:** [assignment_02_food_retrieval.html](assignment_02_food_retrieval.html) · **Object Detection Sprint:** [object_detection_flashcards.html](object_detection_flashcards.html) · **Golden Traps MCQs:** [mcq_golden_traps.html](mcq_golden_traps.html) · **Numericals Lab:** [numericals_formula.html](numericals_formula.html)
+**Live site:** [imajij.github.io/cv-exam-prep](https://imajij.github.io/cv-exam-prep/) · **Last-minute revision:** [last_minute_revision.html](last_minute_revision.html) · **Final 50 MCQ Test:** [final_50_mcq_test.html](final_50_mcq_test.html) · **Quiz:** [quiz.html](https://imajij.github.io/cv-exam-prep/quiz.html) · **Assignment 01 — Homography:** [assignment_01_homography.html](assignment_01_homography.html) · **Assignment 02 — Food Retrieval:** [assignment_02_food_retrieval.html](assignment_02_food_retrieval.html) · **Object Detection Sprint:** [object_detection_flashcards.html](object_detection_flashcards.html) · **Golden Traps MCQs:** [mcq_golden_traps.html](mcq_golden_traps.html) · **Numericals Lab:** [numericals_formula.html](numericals_formula.html)
 
 Detailed notes, practice questions with full solutions, two mock exams, a numericals drill, an interactive quiz and runnable code for the 16-session Computer Vision course. Built for **exam answers**: every formula has its symbols defined, every numerical shows full working, and every MCQ explains why each wrong option is wrong.
 
@@ -16,6 +16,7 @@ Detailed notes, practice questions with full solutions, two mock exams, a numeri
 | Assignment 01 | [`assignment_01_homography.html`](assignment_01_homography.html): homography pipeline, geometry calculator, descriptive answer and MCQ drill |
 | Assignment 02 | [`assignment_02_food_retrieval.html`](assignment_02_food_retrieval.html): text-to-image retrieval, hybrid classifier + CLIP method, metrics and MCQ drill |
 | Final 50 MCQs | [`final_50_mcq_test.html`](final_50_mcq_test.html): timed 50-mark final test with explanations and topic review |
+| Last-minute revision | [`last_minute_revision.html`](last_minute_revision.html): high-yield topics, formulas, traps, answer frameworks and rapid self-test |
 | Numericals Lab | [`numericals_formula.html`](numericals_formula.html): visual formula cards, interactive checkers and fast Python snippets for the five high-yield Section B calculations |
 | Code | 7 short runnable scripts ([`code/`](code/README.md)) |
 
