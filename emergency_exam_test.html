@@ -140,6 +140,7 @@
     <button class="tab-btn" onclick="switchTab('tab-mcq')">⚡ Sec A: 10 MCQ Traps (20M)</button>
     <button class="tab-btn" onclick="switchTab('tab-short')">📝 Sec C: 4 Ready Proofs (20M)</button>
     <button class="tab-btn" onclick="switchTab('tab-long')">🏛️ Sec D: 2 Long Design Blueprints (30M)</button>
+    <button class="tab-btn" onclick="switchTab('tab-assign')">🏆 The 3 Assignments Test (Practicals)</button>
     <button class="tab-btn" onclick="switchTab('tab-plan')">⏱️ 120-Min Minute-by-Minute Plan</button>
   </div>
 
@@ -480,6 +481,87 @@
         4. <em>Throughput:</em> Sequential latency $T_{seq} = \sum T_k \approx 600$ ms. Pipelined throughput $= 1000 / \max(T_k) \approx 1000 / 450 = 2.22$ FPS.
       </div>
       <button class="action-btn" onclick="markLongDone(2, this)" style="margin-top: 12px;">I Can Write This Pipeline in Exam (+15 Marks)</button>
+    </div>
+  </div>
+
+  <!-- TAB ASSIGNMENTS -->
+  <div id="tab-assign" class="section-panel">
+    <div style="background: var(--warn-bg); border: 1px solid var(--warn); padding: 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem;">
+      <strong>🎯 THE 3 COURSE ASSIGNMENTS (PRACTICALS & VIVA):</strong> Test your mastery of the exact approaches, metrics, and pitfalls used in the three competition projects.
+    </div>
+
+    <!-- ASSIGNMENT 1 (HOMOGRAPHY - 1ST PRIORITY) -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">🥇 1st Priority: "Find Homography So Dope" (Geometric Vision)</h3>
+        <span class="pts">Exam Weight: High (S02, S11)</span>
+      </div>
+      <p><strong>Task:</strong> Predict the 3×3 matrix $H$ with $h_{33} = 1$ (8 DOF) mapping Image 1 to Image 2 for real scenes under viewpoint and illumination shifts.</p>
+      <div class="formula-box">
+        x' = (h11·x + h12·y + h13) / (h31·x + h32·y + 1)<br>
+        y' = (h21·x + h22·y + h23) / (h31·x + h32·y + 1)<br>
+        Score = 100 × max(0, 1 - ReprojectionError / 0.2)
+      </div>
+      <div style="background: #21262d; padding: 10px; border-radius: 6px; font-size: 0.9rem; margin: 10px 0;">
+        <strong>Winning Approach:</strong><br>
+        1. <em>Feature Extraction:</em> SIFT (128-d floating-point, scale & rotation invariant).<br>
+        2. <em>Matching:</em> Lowe's ratio test ($\tau = 0.75$) with <code>cv2.BFMatcher(cv2.NORM_L2)</code> or FLANN.<br>
+        3. <em>Estimation:</em> <code>cv2.findHomography(pts1, pts2, cv2.USAC_MAGSAC, 3.0)</code> for robust outlier rejection.<br>
+        4. <em>Normalization:</em> Divide entire matrix by $H_{3,3}$ so that $h_{33} = 1.0$. Fallback to Identity $I_{3\times3}$ if $< 4$ inliers.
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('rev-as-h')">Test: Key Pitfall & MCQ</button>
+      <div class="reveal-content" id="rev-as-h">
+        <strong>Q: Why is mean geometric reprojection error used instead of element-by-element matrix comparison?</strong><br>
+        <em>Answer:</em> A homography is defined only up to scale ($\lambda H \sim H$). A tiny change in the perspective elements ($h_{31}, h_{32}$) causes massive geometric distortion, whereas changes in translation scale proportionally. Evaluating where $H$ actually projects reference points is scale-invariant and reflects true visual alignment.
+      </div>
+    </div>
+
+    <!-- ASSIGNMENT 2 (MATCH THE DISH - 2ND PRIORITY) -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">🥈 2nd Priority: "Match the Dish to Its Rizz" (Text-to-Image Retrieval)</h3>
+        <span class="pts">Exam Weight: High (S05, S13)</span>
+      </div>
+      <p><strong>Task:</strong> Given 303 descriptive dish queries, retrieve and rank the top 20 best-matching photos from a 2,000-image gallery across 100 food classes.</p>
+      <div class="formula-box">
+        R-precision = (correct photos in top R predictions) / R, where R ≈ 20<br>
+        Cosine Similarity: sim(q, x) = (v_x · t_q) / (||v_x|| · ||t_q||)
+      </div>
+      <div style="background: #21262d; padding: 10px; border-radius: 6px; font-size: 0.9rem; margin: 10px 0;">
+        <strong>Winning Hybrid Approach:</strong><br>
+        1. <em>Dish Classification Head:</em> Train a ConvNeXt/ResNet-50 on the 2,000 labelled food images (100 classes). Given query $q$, extract the dish name (via alias metadata) and rank gallery images by $P(\text{class} \mid x)$.<br>
+        2. <em>CLIP Joint Embedding:</em> Pretrained CLIP (ViT-B/32 or ViT-L/14) embeds both the long text descriptions $t_q$ and gallery images $v_x$ into a shared 512-d space.<br>
+        3. <em>Score Fusion:</em> $S(q, x) = 0.6 \cdot P_{classifier} + 0.4 \cdot \text{sim}_{CLIP}$. Classifier provides sharp fine-grained accuracy; CLIP captures descriptive text nuances.
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('rev-as-d')">Test: Key Pitfall & MCQ</button>
+      <div class="reveal-content" id="rev-as-d">
+        <strong>Q: Why does R-precision not depend on the exact order of images within the first R items?</strong><br>
+        <em>Answer:</em> R-precision simply checks the set overlap: how many of the top $R$ predictions belong to the true class divided by $R$. Order within the top $R$ does not alter this count (unlike mAP@20 or MRR which strictly reward higher ranks).
+      </div>
+    </div>
+
+    <!-- ASSIGNMENT 3 (COOKED OR NOT - LAST PRIORITY) -->
+    <div class="card">
+      <div class="card-header">
+        <h3 class="card-title">🥉 Last Priority: "Cooked or Not?" (Video Crash Classification)</h3>
+        <span class="pts">Exam Weight: Moderate (S04, S09 Leakage)</span>
+      </div>
+      <p><strong>Task:</strong> Predict probability $p \in [0, 1]$ of a traffic crash occurring inside a 30-frame dashcam clip ($384 \times 224$ px). Scored on ROC-AUC.</p>
+      <div class="formula-box">
+        Metric: Area Under the ROC Curve (ROC-AUC)<br>
+        Evaluation is threshold-free and immune to class ratio shifts (50% train -> 33% test).
+      </div>
+      <div style="background: #21262d; padding: 10px; border-radius: 6px; font-size: 0.9rem; margin: 10px 0;">
+        <strong>Winning Approach & The Big Trap:</strong><br>
+        1. <em>THE CRUCIAL TRAP:</em> Training clips come in pairs (crash + pre-crash) from the same source video sharing <code>group_id</code>. Random K-fold causes massive <strong>data leakage</strong> (inflating val ROC-AUC to 0.98 while test collapses to 0.65).<br>
+        2. <em>The Fix:</em> <strong>Strict <code>GroupKFold(n_splits=5)</code> grouped on <code>group_id</code></strong>.<br>
+        3. <em>Architecture:</em> Pretrained 2D CNN (ResNet-50 / EfficientNet) frame feature extractor + Temporal Pooling (Bi-GRU or Mean Pooling over 30 frames) $\to$ Sigmoid probability.
+      </div>
+      <button class="reveal-btn" onclick="toggleReveal('rev-as-c')">Test: Key Pitfall & MCQ</button>
+      <div class="reveal-content" id="rev-as-c">
+        <strong>Q: Why is ROC-AUC preferred over Accuracy when the test set has a 33% crash rate but training is 50%?</strong><br>
+        <em>Answer:</em> Accuracy depends on an arbitrary threshold (e.g. 0.50) and changes drastically under class-ratio shift. ROC-AUC evaluates the ranking of predictions across all possible thresholds, making it completely invariant to the class distribution shift.
+      </div>
     </div>
   </div>
 
